@@ -28,7 +28,7 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 
-@Autonomous(name = "AutonRealLeft", group = "Examples")
+@Autonomous(name = "AutonBlue", group = "Examples")
 public class AutonRealLeft extends OpMode {
 
     private Servo hood;
@@ -41,43 +41,50 @@ public class AutonRealLeft extends OpMode {
 
     private DcMotorEx flywheelRight;
 
-    private DcMotorEx intakeLeft;
+    private DcMotorEx IntakeInner;
 
-    private DcMotorEx intakeRight;
+    private DcMotorEx IntakeOuter;
 
-    private CRServo feederL;
 
-    private CRServo feederR;
     private Follower follower;
     private Timer pathTimer, actionTimer, opmodeTimer;
 
     private int count;
-    private final Pose startPose = new Pose(23.687, 119.835, Math.toRadians(180)); // Start Pose of our robot.
-    private final Pose scorePose = new Pose(58, 85, Math.toRadians(180)); // Scoring Pose of our robot. It is facing the goal at a 135 degree angle.
-    private final Pose pickup1Pose = new Pose(20, 83, Math.toRadians(180)); // Highest (First Set) of Artifacts from the Spike Mark.
-//    private final Pose pickup3Pose = new 6Pose(42, 60, Math.toRadians(180)); // Middle (Second Set) of Artifacts from the Spike Mark.
+    private final Pose startPose = new Pose(23.687, 119.835, Math.toRadians(0)); // Start Pose of our robot.
+    private final Pose scorePose = new Pose(58, 85, Math.toRadians(0)); // Scoring Pose of our robot. It is facing the wall.
+    private final Pose pickup1Pose = new Pose(20, 83, Math.toRadians(0)); // Highest (First Set) of Artifacts.
+//    private final Pose pickup3Pose = new Pose(42, 60, Math.toRadians(180)); // Middle (Second Set) of Artifacts from the Spike Mark.
 
-    private final Pose pickup2Pose = new Pose(20, 60, Math.toRadians(180)); // Lowest (Third Set) of Artifacts from the Spike Mark.
+    private final Pose pickup2Pose = new Pose(20, 60, Math.toRadians(0)); // Second Row of Artifacts from the Spike Mark.
 
-    private final Pose pickup2CPose = new Pose(42,60,Math.toRadians(180));
+    private final Pose pickup3CPose = new Pose(60, 36, Math.toRadians(0));
+
+    private final Pose pickup3Pose = new Pose(20, 36, Math.toRadians(0));
+    private final Pose pickup2CPose = new Pose(60,60,Math.toRadians(0)); // Adithiya's Bezier curve control point yay
     private Path scorePreload;
 
-    private PathChain grabPickup1, scorePickup1, grabPickup2, scorePickup2, grabPickup3;
+    private PathChain grabPickup1, scorePickup1, grabPickup2, scorePickup2, grabPickup3, grabPickup4, grabPickup5, scorePickup3 ;
 
     private Servo kicker;
 
-    private org.firstinspires.ftc.teamcode.pedroPathing.AutonRealLeft.State state;
+
+
+
+
     enum State {
         START,
         PICKUP1,
         PICKUP2,
         PICKUP3,
+        PICKUP4,
+        PICKUP5,
+
         SCORING,
-        SCORING2,
         END
 
     }
 
+    State state = State.START;
     public void buildPaths() {
         /* This is our scorePreload path. We are using a BezierLine, which is a straight line. */
         scorePreload = new Path(new BezierLine(startPose, scorePose));
@@ -95,28 +102,34 @@ public class AutonRealLeft extends OpMode {
         raxon = hardwareMap.get(Servo.class,"raxon");
         laxon = hardwareMap.get(Servo.class,"laxon");
 
-        intakeLeft = hardwareMap.get(DcMotorEx.class, "intL");
-        intakeRight = hardwareMap.get(DcMotorEx.class, "intR");
-        kicker = hardwareMap.get(Servo.class, "kicker");
-        intakeLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        intakeRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        intakeLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        intakeRight.setDirection(DcMotor.Direction.REVERSE);
-        intakeLeft.setDirection(DcMotor.Direction.FORWARD);
-        intakeRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        IntakeInner = hardwareMap.get(DcMotorEx.class, "intInner");
+        IntakeOuter = hardwareMap.get(DcMotorEx.class, "intOuter");
+        kicker = hardwareMap.get(Servo.class, "blocker");
+        IntakeInner.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        IntakeOuter.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        IntakeInner.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        IntakeOuter.setDirection(DcMotor.Direction.REVERSE);
+        IntakeInner.setDirection(DcMotor.Direction.FORWARD);
+        IntakeOuter.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-        feederL = hardwareMap.get(CRServo.class, "feederL");
-        feederR = hardwareMap.get(CRServo.class, "feederR");
+
         hood = hardwareMap.get(Servo.class, "hood");
-        feederL.setDirection(DcMotorSimple.Direction.REVERSE);
-        feederR.setDirection(DcMotorSimple.Direction.FORWARD);
 
-        raxon.setPosition(.545);
-        laxon.setPosition(.61);
-        kicker.setPosition(.95);
+
+        raxon.setPosition(.3389);
+        laxon.setPosition(.3389);
+        kicker.setPosition(.4);
     /* Here is an example for Constant Interpolation
-    scorePreload.setConstantInterpolation(startPose.getHeading()); */
+    scorePreload.setConstantInterpolation(startPose.getHeading()); *
 
+
+    //Parallel: .4889
+    //Min Values: .1894
+    //Max Values: 1
+    //R45 = .3389
+    //B45 = .6094
+    //AxonRot = .2705/90
+     */
         /* This is our grabPickup1 PathChain. We are using a single path with a BezierLine, which is a straight line. */
         grabPickup1 = follower.pathBuilder()
                 .addPath(new BezierLine(scorePose, pickup1Pose))
@@ -132,7 +145,8 @@ public class AutonRealLeft extends OpMode {
 
         /* This is our grabPickup2 PathChain. We are using a single path with a BezierLine, which is a straight line. */
 //        grabPickup2 = follower.pathBuilder()
-//                .addPath(new BezierLine(scorePose, pickup2Pose))
+
+        
 //                .setLinearHeadingInterpolation(scorePose.getHeading(), pickup2Pose.getHeading())
 //                .setVelocityConstraint(0.01)
 //                .build();
@@ -164,6 +178,22 @@ public class AutonRealLeft extends OpMode {
                 .setLinearHeadingInterpolation(pickup2Pose.getHeading(), scorePose.getHeading())
                 .setVelocityConstraint(.01)
                 .build();
+
+        grabPickup4 = follower.pathBuilder()
+                .addPath(new BezierLine(scorePose, pickup3CPose))
+                .setLinearHeadingInterpolation(scorePose.getHeading(), pickup3CPose.getHeading())
+                .build();
+
+        grabPickup5 = follower.pathBuilder()
+                .addPath(new BezierLine(pickup3CPose, pickup3Pose))
+                .setLinearHeadingInterpolation(pickup3CPose.getHeading(), pickup3Pose.getHeading())
+                .build();
+
+        scorePickup3 = follower.pathBuilder()
+                .addPath(new BezierLine(pickup3Pose, scorePose))
+                .setLinearHeadingInterpolation(pickup3Pose.getHeading(), scorePose.getHeading())
+                .setVelocityConstraint(.01)
+                .build();
     }
 
     public void autonomousPathUpdate() {
@@ -171,85 +201,16 @@ public class AutonRealLeft extends OpMode {
             case START:
                 flywheelLeft.setVelocity(1700);
                 flywheelRight.setVelocity(1700);
-                hood.setPosition(0);
+                hood.setPosition(.57);
 
-                follower.setMaxPower(0.75);
+                follower.setMaxPower(0.9);
                 follower.followPath(scorePreload);
-                setPathState(org.firstinspires.ftc.teamcode.pedroPathing.AutonRealLeft.State.SCORING);
+                setPathState(State.SCORING);
                 actionTimer.resetTimer();
 
 
                 break;
             //After First 3
-            case SCORING2:
-                if(follower.isBusy())
-                {
-                    actionTimer.resetTimer();
-                }
-                else if (!follower.isBusy())
-                {
-
-                    if(actionTimer.getElapsedTimeSeconds() <= 1){
-
-                        flywheelLeft.setVelocity(1700);
-                        flywheelRight.setVelocity(1700);
-
-                        hood.setPosition(0);
-                        // && flywheelRight.getVelocity() > 1650 && flywheelLeft.getVelocity() > 1650 &&
-                    } else if (actionTimer.getElapsedTimeSeconds() >= 1 && actionTimer.getElapsedTimeSeconds() <=5) {
-                        feederL.setPower(1);
-                        feederR.setPower(1);
-                        intakeLeft.setPower(1);
-                        intakeRight.setPower(-1);
-
-
-
-                    } else if (actionTimer.getElapsedTimeSeconds() >= 5 && actionTimer.getElapsedTimeSeconds() <=5.5) {
-                        kicker.setPosition(.4);
-
-
-                    }
-                    else if (actionTimer.getElapsedTimeSeconds() >= 5.5 && actionTimer.getElapsedTimeSeconds() <= 6) {
-                        kicker.setPosition(.95);
-
-
-                    }
-
-                    else if (actionTimer.getElapsedTimeSeconds() >= 6 && actionTimer.getElapsedTimeSeconds() <= 6.5) {
-                        feederL.setPower(-.1);
-                        feederR.setPower(-.1);
-                        //intakeLeft.setVelocity(0);
-                        //intakeRight.setVelocity(0);
-                    } else {
-                        feederL.setPower(-.1);
-                        feederR.setPower(-.1);
-                        //intakeLeft.setVelocity(0);
-                        //intakeRight.setVelocity(0);
-                        flywheelLeft.setVelocity(-.01);
-                        flywheelRight.setVelocity(-.01);
-                        kicker.setPosition(.95);
-                        if (count == 1) {
-
-                            follower.followPath(grabPickup1, true);
-                            setPathState(org.firstinspires.ftc.teamcode.pedroPathing.AutonRealLeft.State.PICKUP1);
-                            count++;
-                        } else if (count == 2) {
-                            follower.followPath(grabPickup2, true);
-                            setPathState(org.firstinspires.ftc.teamcode.pedroPathing.AutonRealLeft.State.PICKUP2);
-                            count++;
-                        } else if (count == 3) {
-                            follower.followPath(grabPickup1);
-                            setPathState(org.firstinspires.ftc.teamcode.pedroPathing.AutonRealLeft.State.END);
-
-                        }
-
-                    }
-                }
-
-
-                break;
-
-            //First 3
             case SCORING:
                 if(follower.isBusy())
                 {
@@ -260,56 +221,49 @@ public class AutonRealLeft extends OpMode {
 
                     if(actionTimer.getElapsedTimeSeconds() <= 1){
 
-                        flywheelLeft.setVelocity(1700);
-                        flywheelRight.setVelocity(1700);
+                        flywheelLeft.setVelocity(-1800);
+                        flywheelRight.setVelocity(-1800);
 
-                        hood.setPosition(0);
+                        hood.setPosition(.57);
                         // && flywheelRight.getVelocity() > 1650 && flywheelLeft.getVelocity() > 1650 &&
-                    } else if (actionTimer.getElapsedTimeSeconds() >= 1 && actionTimer.getElapsedTimeSeconds() <=3) {
-                        feederL.setPower(1);
-                        feederR.setPower(1);
-                        intakeLeft.setPower(1);
-                        intakeRight.setPower(-1);
+                    } else if (actionTimer.getElapsedTimeSeconds() >= 1 && actionTimer.getElapsedTimeSeconds() <= 3) {
 
-
-
-                    } else if (actionTimer.getElapsedTimeSeconds() >= 3 && actionTimer.getElapsedTimeSeconds() <=3.5) {
-                        kicker.setPosition(.4);
+                        IntakeOuter.setPower(-.8);
+                        IntakeInner.setPower(-.4);
+                        kicker.setPosition(.5);
 
 
                     }
-                    else if (actionTimer.getElapsedTimeSeconds() >= 3.5 && actionTimer.getElapsedTimeSeconds() <= 4) {
-                        kicker.setPosition(.95);
+                    else if (actionTimer.getElapsedTimeSeconds() >= 3 && actionTimer.getElapsedTimeSeconds() <= 3.1) {
+                        kicker.setPosition(.3);
 
 
                     }
+                    else {
 
-                    else if (actionTimer.getElapsedTimeSeconds() >= 4 && actionTimer.getElapsedTimeSeconds() <= 5) {
-                        feederL.setPower(-.1);
-                        feederR.setPower(-.1);
-                        //intakeLeft.setVelocity(0);
-                        //intakeRight.setVelocity(0);
-                    } else {
-                        feederL.setPower(-.1);
-                        feederR.setPower(-.1);
-                        //intakeLeft.setVelocity(0);
-                        //intakeRight.setVelocity(0);
+                        //IntakeInner.setVelocity(0);
+                        //IntakeOuter.setVelocity(0);
                         flywheelLeft.setVelocity(-.01);
                         flywheelRight.setVelocity(-.01);
-                        kicker.setPosition(.95);
                         if (count == 1) {
 
                             follower.followPath(grabPickup1, true);
-                            setPathState(org.firstinspires.ftc.teamcode.pedroPathing.AutonRealLeft.State.PICKUP1);
+                            setPathState(State.PICKUP1);
                             count++;
                         } else if (count == 2) {
                             follower.followPath(grabPickup2, true);
-                            setPathState(org.firstinspires.ftc.teamcode.pedroPathing.AutonRealLeft.State.PICKUP2);
+                            setPathState(State.PICKUP2);
                             count++;
                         } else if (count == 3) {
-                            follower.followPath(grabPickup1);
-                            setPathState(org.firstinspires.ftc.teamcode.pedroPathing.AutonRealLeft.State.END);
+                            follower.followPath(grabPickup4);
+                            setPathState(State.PICKUP4);
+                            count++;
 
+                        }
+                        else if(count == 4)
+                        {
+                            follower.followPath(grabPickup4);
+                            setPathState(State.END);
                         }
 
                     }
@@ -318,6 +272,7 @@ public class AutonRealLeft extends OpMode {
 
                 break;
 
+
             case PICKUP1:
                 /* This case checks the robot's position and will wait until the robot position is close (1 inch away) from the pickup1Pose's position */
                 if(!follower.isBusy()) {
@@ -325,9 +280,9 @@ public class AutonRealLeft extends OpMode {
                     /* Since this is a pathChain, we can have Pedro hold the end point while we are scoring the sample */
 
                     follower.followPath(scorePickup1,true);
-                    setPathState(org.firstinspires.ftc.teamcode.pedroPathing.AutonRealLeft.State.SCORING2);
-                    intakeLeft.setVelocity(300);
-                    intakeRight.setVelocity(-300);
+                    setPathState(State.SCORING);
+                    //IntakeInner.setVelocity(300);
+                    //IntakeOuter.setVelocity(-300);
 
                 }
                 break;
@@ -358,8 +313,9 @@ public class AutonRealLeft extends OpMode {
                     /* Grab Sample */
 
                     /* Since this is a pathChain, we can have Pedro hold the end point while we are scoring the sample */
+                    follower.setMaxPower(.75);
                     follower.followPath(grabPickup3, true);
-                    setPathState(org.firstinspires.ftc.teamcode.pedroPathing.AutonRealLeft.State.PICKUP3);
+                    setPathState(State.PICKUP3);
                 }
                 break;
             case PICKUP3:
@@ -367,17 +323,42 @@ public class AutonRealLeft extends OpMode {
                     /* Grab Sample */
 
                     /* Since this is a pathChain, we can have Pedro hold the end point while we are scoring the sample */
+                    follower.setMaxPower(.9);
                     follower.followPath(scorePickup2, true);
-                    setPathState(org.firstinspires.ftc.teamcode.pedroPathing.AutonRealLeft.State.SCORING2);
-                    intakeLeft.setVelocity(300);
-                    intakeRight.setVelocity(-300);
+                    setPathState(State.SCORING);
+                    //IntakeInner.setVelocity(300);
+                    //IntakeOuter.setVelocity(-300);
 
                 }
+                break;
+            case PICKUP4:
+                if(!follower.isBusy()){
+
+                    follower.followPath(grabPickup5);
+                    setPathState(State.PICKUP5);
+                }
+                break;
+            case PICKUP5:
+                if(!follower.isBusy()){
+
+                    follower.followPath(scorePickup3);
+                    setPathState(State.SCORING);
+                }
+                break;
+
+
+            case END:
+                if(!follower.isBusy()){
+
+
+                }
+                break;
+
         }
     }
 
     /** These change the states of the paths and actions. It will also reset the timers of the individual switches **/
-    public void setPathState(org.firstinspires.ftc.teamcode.pedroPathing.AutonRealLeft.State stateCooler) {
+    public void setPathState(State stateCooler) {
         state = stateCooler;
         pathTimer.resetTimer();
     }
@@ -410,7 +391,6 @@ public class AutonRealLeft extends OpMode {
         actionTimer = new Timer();
         opmodeTimer.resetTimer();
         count = 1;
-        state = org.firstinspires.ftc.teamcode.pedroPathing.AutonRealLeft.State.START;
 
         follower = Constants.createFollower(hardwareMap);
         buildPaths();
@@ -429,7 +409,7 @@ public class AutonRealLeft extends OpMode {
     @Override
     public void start() {
         opmodeTimer.resetTimer();
-        setPathState(org.firstinspires.ftc.teamcode.pedroPathing.AutonRealLeft.State.START);
+        setPathState(State.START);
     }
 
     /** We do not use this because everything should automatically disable **/

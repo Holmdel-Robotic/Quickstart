@@ -130,7 +130,6 @@ public class AutonRealRight extends OpMode {
     //B45 = .6094
     //AxonRot = .2705/90
      */
-
         /* This is our grabPickup1 PathChain. We are using a single path with a BezierLine, which is a straight line. */
         grabPickup1 = follower.pathBuilder()
                 .addPath(new BezierLine(scorePose, pickup1Pose))
