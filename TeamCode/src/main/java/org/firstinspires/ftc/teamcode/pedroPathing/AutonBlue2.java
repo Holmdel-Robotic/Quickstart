@@ -41,12 +41,12 @@ public class AutonBlue2 extends OpMode {
     private final Pose scorePose = new Pose(36, 108, Math.toRadians(0)); // Scoring Pose of our robot. It is facing the wall.
     private final Pose pickup1Pose = new Pose(20, 84, Math.toRadians(0)); // Highest (First Set) of Artifacts.
 //    private final Pose pickup3Pose = new Pose(42, 60, Math.toRadians(180)); // Middle (Second Set) of Artifacts from the Spike Mark.
-    private final Pose pickup1CPose = new Pose(22,100);
+    private final Pose pickup1CPose = new Pose(22,100, Math.toRadians(0));
     private final Pose pickup2Pose = new Pose(20, 60, Math.toRadians(0)); // Second Row of Artifacts from the Spike Mark.
-    private final Pose pickup2CPose = new Pose(23,89);
+    private final Pose pickup2CPose = new Pose(23,89, Math.toRadians(0));
 
     private final Pose pickup3Pose = new Pose(20, 36, Math.toRadians(0));
-    private final Pose pickup3CPose = new Pose(23,76);
+    private final Pose pickup3CPose = new Pose(23,76, Math.toRadians(0));
 
     private Path scorePreload;
 
@@ -75,7 +75,7 @@ public class AutonBlue2 extends OpMode {
     public void buildPaths() {
         /* This is our scorePreload path. We are using a BezierLine, which is a straight line. */
         scorePreload = new Path(new BezierLine(startPose, scorePose));
-        scorePreload.setLinearHeadingInterpolation(startPose.getHeading(), scorePose.getHeading());
+        scorePreload.setTangentHeadingInterpolation();
 
         flywheelLeft = hardwareMap.get(DcMotorEx.class, "flyL");
         flywheelRight = hardwareMap.get(DcMotorEx.class, "flyR");
@@ -126,7 +126,7 @@ public class AutonBlue2 extends OpMode {
         /* This is our scorePickup1 PathChain. We are using a single path with a BezierLine, which is a straight line. */
         scorePickup1 = follower.pathBuilder()
                 .addPath(new BezierLine(pickup1Pose, scorePose))
-                .setLinearHeadingInterpolation(pickup1Pose.getHeading(), scorePose.getHeading())
+                .setTangentHeadingInterpolation()
                 .build();
 
         /* This is our grabPickup2 PathChain. We are using a single path with a BezierLine, which is a straight line. */
@@ -157,7 +157,7 @@ public class AutonBlue2 extends OpMode {
         /* This is our scorePickup3 PathChain. We are using a single path with a BezierLine, which is a straight line. */
         scorePickup2 = follower.pathBuilder()
                 .addPath(new BezierLine(pickup2Pose, scorePose))
-                .setLinearHeadingInterpolation(pickup2Pose.getHeading(), scorePose.getHeading())
+                .setTangentHeadingInterpolation()
                 .build();
 
         grabPickup3 = follower.pathBuilder()
@@ -167,15 +167,15 @@ public class AutonBlue2 extends OpMode {
 
         scorePickup3 = follower.pathBuilder()
                 .addPath(new BezierLine(pickup3Pose, scorePose))
-                .setLinearHeadingInterpolation(pickup3Pose.getHeading(), scorePose.getHeading())
+                .setTangentHeadingInterpolation()
                 .build();
     }
 
     public void autonomousPathUpdate() {
         switch (state) {
             case START:
-                flywheelLeft.setVelocity(600);
-                flywheelRight.setVelocity(600);
+                flywheelLeft.setVelocity(1700);
+                flywheelRight.setVelocity(1700);
                 hood.setPosition(.57);
 
                 follower.setMaxPower(0.9);
@@ -196,8 +196,8 @@ public class AutonBlue2 extends OpMode {
 
                     if(actionTimer.getElapsedTimeSeconds() <= 1){
 
-                        flywheelLeft.setVelocity(-600);
-                        flywheelRight.setVelocity(-600);
+                        flywheelLeft.setVelocity(-1800);
+                        flywheelRight.setVelocity(-1800);
 
                         hood.setPosition(.57);
                         // && flywheelRight.getVelocity() > 1650 && flywheelLeft.getVelocity() > 1650 &&
