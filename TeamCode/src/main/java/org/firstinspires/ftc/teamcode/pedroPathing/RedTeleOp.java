@@ -1,3 +1,4 @@
+
 package org.firstinspires.ftc.teamcode.pedroPathing;
 import android.net.EthernetNetworkSpecifier;
 
@@ -49,6 +50,7 @@ public class RedTeleOp extends OpMode {
     private double x;
     private double y;
 
+    double ballsPassed;
     private double distance;
     private boolean debounceB;
 
@@ -445,8 +447,9 @@ public class RedTeleOp extends OpMode {
           //code here!
             blocker.setPosition(.3);
             debounceStart = false;
-            double ballsPassed = 0;
+            ballsPassed = 0;
             flywheelOn = true;
+            boolean debounceSensor = true;
             flywheelLeft.setVelocity(flywheelVelocity);
             flywheelRight.setVelocity(flywheelVelocity);
             actiontimer.resetTimer();
@@ -458,9 +461,15 @@ public class RedTeleOp extends OpMode {
                     intakeOuter.setPower(-.8);
                     intakeInner.setPower(.4);
 
-                    if (distanceSensor.getDistance(DistanceUnit.CM) < 10){
+                    if (distanceSensor.getDistance(DistanceUnit.CM) < 10 && debounceSensor){
                         hood.setPosition(hood.getPosition() + .02);
                         ballsPassed++;
+                        debounceSensor = false;
+
+
+                    }
+                    else if (distanceSensor.getDistance(DistanceUnit.CM) > 10 ){
+                        debounceSensor = true;
                     }
 
 
@@ -489,7 +498,7 @@ public class RedTeleOp extends OpMode {
             if (!slowMode) follower.setTeleOpDrive(
                     -gamepad1.left_stick_y,
                     -gamepad1.left_stick_x,
-                    -gamepad1.right_stick_x,
+                    gamepad1.right_stick_x,
                     true // Robot Centric
             );
 
@@ -534,6 +543,8 @@ public class RedTeleOp extends OpMode {
         telemetry.addData("distance", distance);
         telemetry.addData("Distance Sensor", distanceSensor.getDistance(DistanceUnit.CM));
         telemetry.addData("gate", gate.getPosition() );
+        telemetry.addData("balls shot this burst" ,ballsPassed );
 
     }
 }
+
