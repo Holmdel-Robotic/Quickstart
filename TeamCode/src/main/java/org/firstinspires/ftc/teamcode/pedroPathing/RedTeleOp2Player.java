@@ -29,8 +29,8 @@ import java.util.function.Supplier;
 public class RedTeleOp2Player extends OpMode {
     private Follower follower;
 
-    private boolean debounceA;
-    private Timer pathTimer;
+    //private boolean debounceA;
+    //private Timer pathTimer;
 
     private  Timer actiontimer;
 
@@ -45,9 +45,9 @@ public class RedTeleOp2Player extends OpMode {
     private double y;
 
     private double distance;
-    private boolean debounceB;
+   // private boolean debounceB;
 
-    private boolean debounceX;
+    //private boolean debounceX;
     public static Pose startingPose; //See ExampleAuto to understand how to use this
     private boolean automatedDrive;
     private Supplier<PathChain> pathChain;
@@ -87,14 +87,14 @@ public class RedTeleOp2Player extends OpMode {
     private boolean dUp, dDown;
 
 
-    private double flywheelVelocity;
-    private boolean feederOn;
+    private double flywheelVelocity, intakeVelocity;
+//    private boolean feederOn;
     private DcMotorEx intakeInner;
 
     private DistanceSensor distanceSensor;
-    private CRServo feederL;
-
-    private CRServo feederR;
+//    private CRServo feederL;
+//
+//    private CRServo feederR;
     private double raxonPos;
     private double laxonPos;
     private double slowModeMultiplier = 0.5;
@@ -141,9 +141,10 @@ public class RedTeleOp2Player extends OpMode {
         blocker = hardwareMap.get(Servo.class, "blocker");
 
         flywheelVelocity = 1800;
+        intakeVelocity = 900;
         intakeOn = false;
         flywheelOn = false;
-        feederOn = false;
+        //feederOn = false;
         kickerpos = true;
         dA = false;
         dB = false;
@@ -223,11 +224,18 @@ public class RedTeleOp2Player extends OpMode {
 
         //flywheelVelocity = .0701544 * Math.pow(distance,2) - 3.07502 * distance + 1626.87017;
         //hood.setPosition(.259228 * Math.sin(.03483 * distance + .48236) + .752718);
-        if (gamepad1.left_bumper && !dLB1){
-            gate.setPosition(0);
+        if (gamepad1.a && !dA){
+            if(gate.getPosition() == 0)
+            {
+                gate.setPosition(.2);
+            }
+            else
+            {
+                gate.setPosition(0);
+            }
         }
-        if ( gamepad1.right_bumper && !dRB1){
-            gate.setPosition(.2);
+        if (gamepad1.right_bumper && !dRB1){
+            intakeVelocity *= -1;
         }
 
         if(raxonPos > 1)
@@ -281,135 +289,146 @@ public class RedTeleOp2Player extends OpMode {
         if (gamepad1.x && !intakeOn && !dX){
             dX = true;
             intakeOn = true;
-            intakeOuter.setPower(-.8);
-            intakeInner.setPower(.4);
+            intakeOuter.setVelocity(-intakeVelocity);
+            intakeInner.setVelocity(intakeVelocity);
         }
         if (gamepad1.x && intakeOn && !dX){
             dX = true;
             intakeOn = false;
-            intakeOuter.setPower(0);
-            intakeInner.setPower(0);
+            intakeOuter.setVelocity(0);
+            intakeInner.setVelocity(0);
         }
-        if (gamepad1.b && !feederOn && !debounceB){
-            debounceB = true;
-            feederOn = true;
-            intakeOuter.setVelocity(900);
-            intakeInner.setVelocity(-900);
-//            feederL.setPower(-1);
-//            feederR.setPower(1);
-        }
+//        if (gamepad2.b && !feederOn && !debounceB){
+//            debounceB = true;
+//            feederOn = true;
+//            intakeOuter.setVelocity(900);
+//            intakeInner.setVelocity(-900);
+////            feederL.setPower(-1);
+////            feederR.setPower(1);
+//        }
 
-        if (gamepad2.left_bumper && debounceLB){
+        if (gamepad2.left_bumper && dLB2){
             hood.setPosition(hood.getPosition()-.05);
-            debounceLB = false;
+            dLB2 = false;
         }
         if(!gamepad2.left_bumper)
         {
-            debounceLB = true;
+            dLB2 = true;
         }
-        if (gamepad2.right_bumper && debounceRB){
+        if (gamepad2.right_bumper && dRB2){
             hood.setPosition(hood.getPosition()+.05);
-            debounceRB = false;
+            dRB2 = false;
         }
         if(!gamepad2.right_bumper)
         {
-            debounceRB = true;
+            dRB2 = true;
         }
 
-        if (gamepad1.guide && debounceGUIDE){
-            slowMode = !slowMode;
-            debounceGUIDE = false;
+        if (gamepad2.guide && dG){
+            //slowMode = !slowMode;
+            autoTarget = !autoTarget;
+            laxonPos = .3389;
+            raxonPos = .3389;
+            dG = false;
         }
-        if (!gamepad1.guide){
-            debounceGUIDE = true;
-        }
-
-
-
-
-
-        if (gamepad1.b && feederOn && !debounceB){
-            debounceB = true;
-            feederOn = false;
-            intakeOuter.setVelocity(0);
-            intakeInner.setVelocity(0);
-//            feederL.setPower(0);
-//            feederR.setPower(0);
+        if (!dG){
+            dG = true;
         }
 
-        if (gamepad2.x && !flywheelOn && !debounceX){
-            debounceX = true;
+
+
+
+
+//        if (gamepad1.b && feederOn && !debounceB){
+//            debounceB = true;
+//            feederOn = false;
+//            intakeOuter.setVelocity(0);
+//            intakeInner.setVelocity(0);
+////            feederL.setPower(0);
+////            feederR.setPower(0);
+//        }
+
+        if (gamepad2.x && !flywheelOn && !dX){
+            dX = true;
             flywheelOn = true;
             flywheelLeft.setVelocity(flywheelVelocity);
             flywheelRight.setVelocity(flywheelVelocity);
         }
-        if (gamepad2.x && flywheelOn && !debounceX){
-            debounceX = true;
+        if (gamepad2.x && flywheelOn && !dX){
+            dX = true;
             flywheelOn = false;
             flywheelLeft.setPower(0);
             flywheelRight.setPower(0);
         }
 
-        if (gamepad1.left_trigger > .01 && debounceLEFT_TRIGGER){
+        if (gamepad1.left_trigger > .01 && dLT1){
+            intakeVelocity =+ 50;
+            dLT1 = false;
+        }
+        if (gamepad1.right_trigger > .01 && dRT1) {
+            intakeVelocity -= 50;
+            dRT1 = false;
+        }
+        if (gamepad2.left_trigger > .01 && dLT2){
             raxonPos = raxon.getPosition() +.03;
             laxonPos = laxon.getPosition() + .03;
             laxon.setPosition(laxonPos);
             raxon.setPosition(raxonPos);
 
-            debounceLEFT_TRIGGER = false;
+            dLT2 = false;
         }
-        if (gamepad1.right_trigger > .01 && debounceRIGHT_TRIGGER){
+        if (gamepad2.right_trigger > .01 && dRT2){
             raxonPos = raxon.getPosition() - .03;
             laxonPos = laxon.getPosition() - .03;
             raxon.setPosition(raxonPos);
             laxon.setPosition(laxonPos);
-            debounceRIGHT_TRIGGER = false;
+            dRT2 = false;
 
         }
 
 
 
 
-        if (gamepad1.left_trigger < .01){
-            debounceLEFT_TRIGGER = true;
+        if (gamepad2.left_trigger < .01){
+            dLT2 = true;
         }
-        if (gamepad1.right_trigger < .01){
-            debounceRIGHT_TRIGGER = true;
+        if (gamepad2.right_trigger < .01){
+            dRT2 = true;
         }
 
 
 
 
         if(!gamepad1.a){
-            debounceA = false;
+            dA = false;
         }
         if(!gamepad1.b){
-            debounceB = false;
+            dB = false;
         }
         if(!gamepad2.x){
-            debounceX = false;
+            dX = false;
         }
 
-        if(gamepad1.dpad_left && debounceDL)
-        {
-            laxonPos = laxon.getPosition() + .005;
-            laxon.setPosition(laxonPos);
-            debounceDL = false;
-        }
-        if(gamepad1.dpad_right && debounceDR)
-        {
-            laxonPos = laxon.getPosition() - .005;
-            laxon.setPosition(laxonPos);
-            debounceDR = false;
-        }
-        if(!gamepad1.dpad_left)
-        {
-            debounceDL = true;
-        }
-        if(!gamepad1.dpad_right)
-        {
-            debounceDR = true;
-        }
+//        if(gamepad1.dpad_left && debounceDL)
+//        {
+//            laxonPos = laxon.getPosition() + .005;
+//            laxon.setPosition(laxonPos);
+//            debounceDL = false;
+//        }
+//        if(gamepad1.dpad_right && debounceDR)
+//        {
+//            laxonPos = laxon.getPosition() - .005;
+//            laxon.setPosition(laxonPos);
+//            debounceDR = false;
+//        }
+//        if(!gamepad1.dpad_left)
+//        {
+//            debounceDL = true;
+//        }
+//        if(!gamepad1.dpad_right)
+//        {
+//            debounceDR = true;
+//        }
         //Call this once per loop
         follower.update();
         telemetryM.update();
@@ -434,53 +453,53 @@ public class RedTeleOp2Player extends OpMode {
         if(!gamepad2.dpad_down){
             debounce_dpad_down = false;
         }
-        if(gamepad2.y && debounceY)
+        if(gamepad2.y && dY)
         {
             autoTarget = !autoTarget;
             laxonPos = .3389;
             raxonPos = .3389;
-            debounceY = false;
+            dY = false;
         }
         if(!gamepad2.y)
         {
-            debounceY = true;
+            dY = true;
         }
 
-        if(gamepad2.start && debounceStart){
-          //code here!
-            blocker.setPosition(.3);
-            debounceStart = false;
-            double ballsPassed = 0;
-            flywheelOn = true;
-            flywheelLeft.setVelocity(flywheelVelocity);
-            flywheelRight.setVelocity(flywheelVelocity);
-            actiontimer.resetTimer();
-            double OgHoodPos = hood.getPosition();
-            while (ballsPassed < 3 && actiontimer.getElapsedTimeSeconds() < 4){
-                blocker.setPosition(5);
-                if (actiontimer.getElapsedTimeSeconds() >= 2){
-                    //loop through balls here
-                    intakeOuter.setPower(-.8);
-                    intakeInner.setPower(.4);
-
-                    if (distanceSensor.getDistance(DistanceUnit.CM) < 10){
-                        hood.setPosition(hood.getPosition() + .02);
-                        ballsPassed++;
-                    }
-
-
-                }
-
-            }
-            blocker.setPosition(.3);
-            intakeOuter.setPower(0);
-            intakeInner.setPower(0);
-
-
-        }
-        if(!gamepad2.start){
-            debounceStart = true;
-        }
+//        if(gamepad2.start && debounceStart){
+//          //code here!
+//            blocker.setPosition(.3);
+//            debounceStart = false;
+//            double ballsPassed = 0;
+//            flywheelOn = true;
+//            flywheelLeft.setVelocity(flywheelVelocity);
+//            flywheelRight.setVelocity(flywheelVelocity);
+//            actiontimer.resetTimer();
+//            double OgHoodPos = hood.getPosition();
+//            while (ballsPassed < 3 && actiontimer.getElapsedTimeSeconds() < 4){
+//                blocker.setPosition(5);
+//                if (actiontimer.getElapsedTimeSeconds() >= 2){
+//                    //loop through balls here
+//                    intakeOuter.setPower(-.8);
+//                    intakeInner.setPower(.4);
+//
+//                    if (distanceSensor.getDistance(DistanceUnit.CM) < 10){
+//                        hood.setPosition(hood.getPosition() + .02);
+//                        ballsPassed++;
+//                    }
+//
+//
+//                }
+//
+//            }
+//            blocker.setPosition(.3);
+//            intakeOuter.setPower(0);
+//            intakeInner.setPower(0);
+//
+//
+//        }
+//        if(!gamepad2.start){
+//            debounceStart = true;
+//        }
 
 
 
