@@ -57,7 +57,7 @@ public class AprilTagEasy extends LinearOpMode {
     private double laxonPos = 0.3056;
     private static final double CENTER_POS = 0.3056;
     private static final double MIN_POS = 0.1894;
-    private static final double MAX_POS = .9999;
+    private static final double MAX_POS = .9859;
 
     // Increased P gain for faster response
     private double kP = 0.008; // Increased from 0.003
