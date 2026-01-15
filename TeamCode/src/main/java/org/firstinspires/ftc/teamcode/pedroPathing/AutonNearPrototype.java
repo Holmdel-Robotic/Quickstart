@@ -180,7 +180,7 @@ public class AutonNearPrototype extends OpMode {
                 .build();
 
         score4 = follower.pathBuilder()
-                .addPath(new BezierCurve(pickup3Pose, scorePose2))
+                .addPath(new BezierLine(pickup3Pose, scorePose2))
                 .setTangentHeadingInterpolation()
                 .build();
         end = follower.pathBuilder()
