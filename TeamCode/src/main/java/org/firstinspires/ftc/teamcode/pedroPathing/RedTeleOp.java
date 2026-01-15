@@ -349,7 +349,7 @@ public class RedTeleOp extends OpMode {
 
         if (gamepad1.left_trigger > .01 && debounceLEFT_TRIGGER){
             raxonPos = raxon.getPosition() +.03;
-            laxonPos = laxon.getPosition() + .03;
+            laxonPos = laxon.getPosition() - .03;
             laxon.setPosition(laxonPos);
             raxon.setPosition(raxonPos);
 
@@ -357,7 +357,7 @@ public class RedTeleOp extends OpMode {
         }
         if (gamepad1.right_trigger > .01 && debounceRIGHT_TRIGGER){
             raxonPos = raxon.getPosition() - .03;
-            laxonPos = laxon.getPosition() - .03;
+            laxonPos = laxon.getPosition() + .03;
             raxon.setPosition(raxonPos);
             laxon.setPosition(laxonPos);
             debounceRIGHT_TRIGGER = false;
