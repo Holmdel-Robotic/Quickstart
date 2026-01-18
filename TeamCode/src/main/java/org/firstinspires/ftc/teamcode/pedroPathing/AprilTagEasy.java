@@ -92,7 +92,7 @@ public class AprilTagEasy extends LinearOpMode {
     private void track() {
         LLResult result = limelight.getLatestResult();
 
-        // No target? Do nothing
+        // No target, Do nothing
         if (result == null || !result.isValid()) {
             telemetry.addData("Status", "No target");
             lastError = 0;
