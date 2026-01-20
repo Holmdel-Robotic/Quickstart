@@ -51,13 +51,13 @@ public class AprilTagRed extends LinearOpMode {
     private Servo laxon;
     private double raxonPos = .3389;
     private double laxonPos = .3389;
-    private static final double CENTER_POS = .3389;
-    private static final double MIN_POS = 0.1894;
-    private static final double MAX_POS = 1;
+    private final double CENTER_POS = .3389;
+    private final double MIN_POS = 0.1894;
+    private final double MAX_POS = 1;
     private double kP = 0.003;
-
+    private final double kys = 0;
     private double lastError = 0;
-    private static final double s = 0.4;
+    private final double s = 0.4;
 
     @Override
     public void runOpMode() {
@@ -101,36 +101,20 @@ public class AprilTagRed extends LinearOpMode {
         double error = (s * lastError) + ((1 - s) * rawError);
         lastError = error;
 
-        if (Math.abs(error) < 0.3) {
+        if (Math.abs(error) < kys) {
             error = 0;
+            telemetry.addLine("locked in");
         }
 
         // Calculate correction
         double correction = kP * error;
-        correction = Math.max(-0.15, Math.min(0.15, correction));
+        correction = Math.max(-0.1, Math.min(0.1, correction));
 
 
         laxonPos = CENTER_POS + correction;
         raxonPos = CENTER_POS + correction;
         laxonPos = Math.max(MIN_POS, Math.min(MAX_POS, laxonPos));
         raxonPos = Math.max(MIN_POS, Math.min(MAX_POS, raxonPos));
-
-        if(raxonPos > 1)
-        {
-            raxonPos = 1;
-        }
-        if(raxonPos < .1894)
-        {
-            raxonPos = .1894;
-        }
-        if(laxonPos < .1894)
-        {
-            laxonPos = .1894;
-        }
-        if(laxonPos > 1)
-        {
-            laxonPos = 1;
-        }
 
         laxon.setPosition(laxonPos);
         raxon.setPosition(raxonPos);
@@ -141,9 +125,6 @@ public class AprilTagRed extends LinearOpMode {
         telemetry.addData("error corrected", "%.2f deg", error);
         telemetry.addData("Correction", "%.4f", correction);
 
-        if (Math.abs(error) < 0.3) {
-            telemetry.addLine("LOCKED ON");
-        }
     }
 }
 
