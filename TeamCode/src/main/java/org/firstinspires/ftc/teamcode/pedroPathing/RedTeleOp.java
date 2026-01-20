@@ -26,6 +26,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 //import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcontroller.external.samples.SensorMROpticalDistance;
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 import java.util.function.Supplier;
@@ -183,8 +184,8 @@ public class RedTeleOp extends OpMode {
         follower.startTeleopDrive();
         follower.setMaxPower(.8);
         blocker.setPosition(.3);
-        raxon.setPosition(.5);
-        laxon.setPosition(.5);
+
+
         hood.setPosition(.5694);
         imu.resetYaw();
         //Parallel: .4889
@@ -206,9 +207,15 @@ public class RedTeleOp extends OpMode {
             x = follower.getPose().getX();
             y = follower.getPose().getY();
             angleToRot = (imu.getRobotYawPitchRollAngles().getYaw()) - Math.toDegrees(Math.atan((138-y)/(138-x)));
-            laxonPos = .4889 + (.2705/90)*angleToRot;
-            raxonPos = .4889 + (.2705/90)*angleToRot;
+            laxonPos = .49 + (.2705/90)*angleToRot; //if not work subtract laxon and act raxon
+            raxonPos = .48 + (.2705/90)*angleToRot;
+            raxon.setPosition(raxonPos);
+            laxon.setPosition(laxonPos);
         }
+
+        distance = Math.sqrt(Math.pow(144-y,2) + Math.pow(144-x,2));
+
+
 
 
 
@@ -221,7 +228,7 @@ public class RedTeleOp extends OpMode {
 
 
 
-        flywheelVelocity = .0701544 * Math.pow(distance,2) - 3.07502 * distance + 1626.87017;
+        //flywheelVelocity = .0701544 * Math.pow(distance,2) - 3.07502 * distance + 1200;
         //hood.setPosition(.259228 * Math.sin(.03483 * distance + .48236) + .752718);
         if (gamepad1.left_stick_button){
             gate.setPosition(0);
@@ -234,21 +241,21 @@ public class RedTeleOp extends OpMode {
         {
             raxonPos = 1;
         }
-        if(raxonPos < 0)
+        if(raxonPos < .1894)
        {
-            raxonPos = 0;
+            raxonPos = .1894;
         }
-        if(laxonPos < 0)
+        if(laxonPos < .1894)
         {
-            laxonPos = 0;
+            laxonPos = .1894;
         }
         if(laxonPos > 1)
         {
             laxonPos = 1;
         }
 
-        raxon.setPosition(raxonPos);
-        laxon.setPosition(laxonPos);
+        //raxon.setPosition(raxonPos);
+        //laxon.setPosition(laxonPos);
 
         if(!gamepad1.back){
 
@@ -351,16 +358,16 @@ public class RedTeleOp extends OpMode {
         }
 
         if (gamepad1.left_trigger > .01 && debounceLEFT_TRIGGER){
-            raxonPos = raxon.getPosition() +.02;
-            laxonPos = laxon.getPosition() - .02;
+            raxonPos = raxon.getPosition() +.03;
+            laxonPos = laxon.getPosition() - .03;
             laxon.setPosition(laxonPos);
             raxon.setPosition(raxonPos);
 
             debounceLEFT_TRIGGER = false;
         }
         if (gamepad1.right_trigger > .01 && debounceRIGHT_TRIGGER){
-            raxonPos = raxon.getPosition() - .02;
-            laxonPos = laxon.getPosition() + .02;
+            raxonPos = raxon.getPosition() - .03;
+            laxonPos = laxon.getPosition() + .03;
             raxon.setPosition(raxonPos);
             laxon.setPosition(laxonPos);
             debounceRIGHT_TRIGGER = false;
@@ -392,14 +399,14 @@ public class RedTeleOp extends OpMode {
 
         if(gamepad1.dpad_left && debounceDL)
         {
-            laxonPos = laxon.getPosition() + .005;
-            laxon.setPosition(laxonPos);
+            //laxonPos = laxon.getPosition() + .005;
+            //laxon.setPosition(laxonPos);
             debounceDL = false;
         }
         if(gamepad1.dpad_right && debounceDR)
         {
-            laxonPos = laxon.getPosition() - .005;
-            laxon.setPosition(laxonPos);
+            //laxonPos = laxon.getPosition() - .005;
+            //laxon.setPosition(laxonPos);
             debounceDR = false;
         }
         if(!gamepad1.dpad_left)
@@ -536,11 +543,12 @@ public class RedTeleOp extends OpMode {
         //Optional way to change slow mode strength
 
 
-
+        telemetry.addData("axonL", laxon.getPosition());
+        telemetry.addData("axonR", raxon.getPosition());
          telemetry.addData("blocker pos",blocker.getPosition());
         telemetry.addData("Hood position", hood.getPosition());
-        telemetry.addData("raxon",raxon.getPosition());
-        telemetry.addData("laxon",laxon.getPosition());
+        //telemetry.addData("raxon",raxon.getPosition());
+        //telemetry.addData("laxon",laxon.getPosition());
         telemetry.addData("atr", angleToRot);
         telemetry.addData("flywheel velocity",flywheelLeft.getVelocity());
         telemetry.addData("debounce y", debounceY);
