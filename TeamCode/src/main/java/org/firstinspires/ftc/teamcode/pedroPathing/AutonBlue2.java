@@ -48,16 +48,27 @@ public class AutonBlue2 extends OpMode {
     private final Pose pickup2Pose = new Pose(20, 60, Math.toRadians(0)); // Second Row of Artifacts from the Spike Mark.
     private final Pose pickup2CPose = new Pose(23,89, Math.toRadians(0));
 
-    private final Pose pickup2C2Pose = new Pose(50,97, Math.toRadians(0));
+    private final Pose leverPose = new Pose(14,70,Math.toRadians(0));
+
+    private final Pose leverCPose = new Pose(28,71,Math.toRadians(0));
+
+    private final Pose leverC2Pose = new Pose(52,90,Math.toRadians(0));
+    //private final Pose pickup2C2Pose = new Pose(50,97, Math.toRadians(0));
 
     private final Pose pickup3Pose = new Pose(20, 36, Math.toRadians(0));
     private final Pose pickup3CPose = new Pose(23,76, Math.toRadians(0));
 
     private final Pose pickup3C2Pose = new Pose(49,94, Math.toRadians(0));
 
+    private final Pose pickup4Pose = new Pose(10,9,Math.toRadians(0));
+
+    private final Pose pickup4CPose = new Pose(36,6,Math.toRadians(0));
+
+    private final Pose pickup4C2Pose = new Pose(67,77,Math.toRadians(0));
+
     private Path scorePreload;
 
-    private PathChain grabPickup1, scorePickup1, grabPickup2, scorePickup2, grabPickup3, grabPickup4, grabPickup5, scorePickup3 ;
+    private PathChain grabPickup1, scorePickup1, grabPickup2, leverPush, scorePickup2, grabPickup3, grabPickup4, scorePickup4, scorePickup3 ;
 
     private Servo kicker;
 
@@ -72,6 +83,7 @@ public class AutonBlue2 extends OpMode {
         PICKUP3,
         PICKUP4,
         PICKUP5,
+        LEVER,
 
         SCORING,
         END
@@ -148,6 +160,12 @@ public class AutonBlue2 extends OpMode {
                 .setTangentHeadingInterpolation()
                 .build();
 
+        leverPush = follower.pathBuilder()
+                .addPath(new BezierCurve(pickup2Pose, leverCPose, leverPose))
+                .setTangentHeadingInterpolation()
+                .setReversed()
+                .build();
+
         /* This is our scorePickup2 PathChain. We are using a single path with a BezierLine, which is a straight line. */
 //        scorePickup2 = follower.pathBuilder()
 //                .addPath(new BezierLine(pickup2Pose, pickup3Pose))
@@ -163,7 +181,7 @@ public class AutonBlue2 extends OpMode {
 
         /* This is our scorePickup3 PathChain. We are using a single path with a BezierLine, which is a straight line. */
         scorePickup2 = follower.pathBuilder()
-                .addPath(new BezierCurve(pickup2Pose,pickup2C2Pose, scorePose))
+                .addPath(new BezierCurve(leverPose ,leverC2Pose, scorePose))
                 .setTangentHeadingInterpolation()
                 .build();
 
@@ -174,6 +192,16 @@ public class AutonBlue2 extends OpMode {
 
         scorePickup3 = follower.pathBuilder()
                 .addPath(new BezierCurve(pickup3Pose, pickup3C2Pose, scorePose))
+                .setTangentHeadingInterpolation()
+                .build();
+
+        grabPickup4 = follower.pathBuilder()
+                .addPath(new BezierCurve(scorePose, pickup4CPose, pickup4Pose))
+                .setTangentHeadingInterpolation()
+                .build();
+
+        scorePickup4 = follower.pathBuilder()
+                .addPath(new BezierCurve(pickup4Pose, pickup4C2Pose, scorePose))
                 .setTangentHeadingInterpolation()
                 .build();
     }
@@ -244,6 +272,12 @@ public class AutonBlue2 extends OpMode {
                         }
                         else if(count == 4)
                         {
+                            follower.followPath(grabPickup4);
+                            setPathState(State.PICKUP4);
+                            count++;
+                        }
+                        else if(count == 5)
+                        {
                             follower.followPath(grabPickup1);
                             setPathState(State.END);
                         }
@@ -296,10 +330,16 @@ public class AutonBlue2 extends OpMode {
 
                     /* Since this is a pathChain, we can have Pedro hold the end point while we are scoring the sample */
                     follower.setMaxPower(.75);
-                    follower.followPath(scorePickup2, true);
-                    setPathState(State.SCORING);
+                    follower.followPath(leverPush, true);
+                    setPathState(State.LEVER);
                 }
                 break;
+            case LEVER:
+                if(!follower.isBusy())
+                {
+                    follower.followPath(leverPush, true);
+                    setPathState(State.SCORING);
+                }
             case PICKUP3:
                 if(!follower.isBusy()) {
                     /* Grab Sample */
@@ -313,13 +353,13 @@ public class AutonBlue2 extends OpMode {
 
                 }
                 break;
-//            case PICKUP4:
-//                if(!follower.isBusy()){
-//
-//                    follower.followPath(grabPickup5);
-//                    setPathState(State.PICKUP5);
-//                }
-//                break;
+            case PICKUP4:
+                if(!follower.isBusy()){
+
+                    follower.followPath(scorePickup4);
+                    setPathState(State.SCORING);
+                }
+                break;
 //            case PICKUP5:
 //                if(!follower.isBusy()){
 //

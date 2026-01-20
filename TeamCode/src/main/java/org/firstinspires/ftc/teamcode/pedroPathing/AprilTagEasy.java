@@ -30,8 +30,6 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-
-
 package org.firstinspires.ftc.teamcode.pedroPathing;
 
 import com.bylazar.configurables.annotations.Configurable;
@@ -53,25 +51,21 @@ public class AprilTagEasy extends LinearOpMode {
     private Servo laxon;
 
     // Servo positions
-    private double raxonPos = 0.3056;
-    private double laxonPos = 0.3056;
-    private static final double CENTER_POS = 0.3056;
+    private double raxonPos = .3389;
+    private double laxonPos = .3389;
+    private static final double CENTER_POS = .3389;
     private static final double MIN_POS = 0.1894;
     private static final double MAX_POS = .9859;
+    private double kP = 0.008;
 
-    // Increased P gain for faster response
-    private double kP = 0.008; // Increased from 0.003
-
-    // Reduced smoothing for faster reaction
     private double lastError = 0;
-    private static final double SMOOTHING = 0.3; // Reduced from 0.75 - less smooth but faster
+    private static final double s = 0.75;
 
     @Override
     public void runOpMode() {
         raxon = hardwareMap.get(Servo.class, "raxon");
         laxon = hardwareMap.get(Servo.class, "laxon");
         limelight = hardwareMap.get(Limelight3A.class, "limelight");
-
         limelight.pipelineSwitch(0);
         limelight.start();
 
@@ -83,7 +77,7 @@ public class AprilTagEasy extends LinearOpMode {
         while (opModeIsActive()) {
             track();
             telemetry.update();
-            sleep(10); // speed up for fast updating
+            sleep(30);
         }
 
         limelight.close();
@@ -92,7 +86,6 @@ public class AprilTagEasy extends LinearOpMode {
     private void track() {
         LLResult result = limelight.getLatestResult();
 
-        // No target, Do nothing
         if (result == null || !result.isValid()) {
             telemetry.addData("Status", "No target");
             lastError = 0;
@@ -106,23 +99,20 @@ public class AprilTagEasy extends LinearOpMode {
             return;
         }
 
-        // Get error from first tag
         double rawError = tags.get(0).getTargetXDegrees();
 
-        //blend with last error
-        double error = (SMOOTHING * lastError) + ((1 - SMOOTHING) * rawError);
+        double error = (s * lastError) + ((1 - s) * rawError);
         lastError = error;
 
-        //initial response
-        if (Math.abs(error) < 0.3) { // Reduced from 0.5
+        if (Math.abs(error) < 0.3) {
             error = 0;
         }
 
         // Calculate correction
         double correction = kP * error;
-        correction = Math.max(-0.15, Math.min(0.15, correction)); // Increased limit from 0.05 to 0.15
+        correction = Math.max(-0.15, Math.min(0.15, correction));
 
-        // Move servos
+
         laxonPos = CENTER_POS + correction;
         raxonPos = CENTER_POS + correction;
 
@@ -150,10 +140,10 @@ public class AprilTagEasy extends LinearOpMode {
         laxon.setPosition(laxonPos);
         raxon.setPosition(raxonPos);
 
-        // Show what's happening
+
         telemetry.addData("Target ID", tags.get(0).getFiducialId());
         telemetry.addData("Raw Error", "%.2f deg", rawError);
-        telemetry.addData("Smoothed", "%.2f deg", error);
+        telemetry.addData("error corrected", "%.2f deg", error);
         telemetry.addData("Correction", "%.4f", correction);
 
         if (Math.abs(error) < 0.3) {
