@@ -449,7 +449,7 @@ public class RedTeleOp2Player extends OpMode {
         }
         if(gamepad2.y && debounceY)
         {
-            autoTarget = !autoTarget;
++            autoTarget = !autoTarget;
             laxonPos = .5;
             raxonPos = .5;
             debounceY = false;
