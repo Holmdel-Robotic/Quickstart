@@ -56,17 +56,16 @@ public class AprilTagEasy extends LinearOpMode {
     private static final double CENTER_POS = 0.3056;
     private static final double MIN_POS = 0.1894;
     private static final double MAX_POS = .9859;
-    private double kP = 0.005;
+    private double kP = 0.008;
 
     private double lastError = 0;
-    private static final double s = 0.3;
+    private static final double s = 0.5;
 
     @Override
     public void runOpMode() {
         raxon = hardwareMap.get(Servo.class, "raxon");
         laxon = hardwareMap.get(Servo.class, "laxon");
         limelight = hardwareMap.get(Limelight3A.class, "limelight");
-
         limelight.pipelineSwitch(0);
         limelight.start();
 
@@ -113,7 +112,7 @@ public class AprilTagEasy extends LinearOpMode {
         double correction = kP * error;
         correction = Math.max(-0.15, Math.min(0.15, correction));
 
-        // Move servos
+
         laxonPos = CENTER_POS + correction;
         raxonPos = CENTER_POS + correction;
 
@@ -141,7 +140,7 @@ public class AprilTagEasy extends LinearOpMode {
         laxon.setPosition(laxonPos);
         raxon.setPosition(raxonPos);
 
-        // Show what's happening
+
         telemetry.addData("Target ID", tags.get(0).getFiducialId());
         telemetry.addData("Raw Error", "%.2f deg", rawError);
         telemetry.addData("error corrected", "%.2f deg", error);
