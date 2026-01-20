@@ -49,17 +49,17 @@ public class AprilTagBlue extends LinearOpMode {
     private Limelight3A limelight;
     private Servo raxon;
     private Servo laxon;
-    private double raxonPos = .3389;
-    private double laxonPos = .3389;
+    private double raxonPos = .5;
+    private double laxonPos = .5;
 
-    private static final double CENTER_POS = .3389;
-    private static final double MIN_POS = 0.1894;
-    private static final double MAX_POS = 1;
+    private double CENTER_POS = .5;
+    private  double MIN_POS = 0.1894;
+    private double MAX_POS = 1;
     private double kP = 0.003;
-    private final double kys = 0;
+    private double kys = 0;
 
     private double lastError = 0;
-    private static final double s = 0.4;
+    private double smooth = 0.4;
 
     @Override
     public void runOpMode() {
@@ -100,7 +100,7 @@ public class AprilTagBlue extends LinearOpMode {
 
         double rawError = tags.get(0).getTargetXDegrees();
 
-        double error = (s * lastError) + ((1 - s) * rawError);
+        double error = (smooth * lastError) + ((1 - smooth) * rawError);
         lastError = error;
 
         if (Math.abs(error) < kys) {
