@@ -93,8 +93,10 @@ public class AprilTagEasy extends LinearOpMode {
         }
 
         List<LLResultTypes.FiducialResult> tags = result.getFiducialResults();
+
         if (tags.isEmpty()) {
-            telemetry.addData("Status", "No AprilTags");
+            telemetry.addData("No AprilTags",
+                    "");
             lastError = 0;
             return;
         }
@@ -115,8 +117,6 @@ public class AprilTagEasy extends LinearOpMode {
 
         laxonPos = CENTER_POS + correction;
         raxonPos = CENTER_POS + correction;
-
-        // Keep in bounds
         laxonPos = Math.max(MIN_POS, Math.min(MAX_POS, laxonPos));
         raxonPos = Math.max(MIN_POS, Math.min(MAX_POS, raxonPos));
 
