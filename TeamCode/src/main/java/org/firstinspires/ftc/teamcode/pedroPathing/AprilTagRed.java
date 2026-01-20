@@ -43,16 +43,16 @@ import com.qualcomm.robotcore.hardware.Servo;
 import java.util.List;
 
 @Configurable
-@TeleOp(name = "AprilTagEasy")
+@TeleOp(name = "AprilTagRed")
 public class AprilTagRed extends LinearOpMode {
 
     private Limelight3A limelight;
     private Servo raxon;
     private Servo laxon;
-    private double raxonPos = .3389;
-    private double laxonPos = .3389;
-    private static final double CENTER_POS = .3389;
-    private static final double MIN_POS = 0.1894;
+    private double raxonPos = .5;
+    private double laxonPos = .5;
+    private static final double CENTER_POS = .5;
+    private static final double MIN_POS = 0.1;
     private static final double MAX_POS = 1;
     private double kP = 0.008;
 
@@ -119,13 +119,13 @@ public class AprilTagRed extends LinearOpMode {
         {
             raxonPos = 1;
         }
-        if(raxonPos < .1894)
+        if(raxonPos < .1)
         {
-            raxonPos = .1894;
+            raxonPos = .1;
         }
-        if(laxonPos < .1894)
+        if(laxonPos < .1)
         {
-            laxonPos = .1894;
+            laxonPos = .1;
         }
         if(laxonPos > 1)
         {

@@ -43,7 +43,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 import java.util.List;
 
 @Configurable
-@TeleOp(name = "AprilTagEasy")
+@TeleOp(name = "AprilTagBlue")
 public class AprilTagBlue extends LinearOpMode {
 
     private Limelight3A limelight;
@@ -87,62 +87,61 @@ public class AprilTagBlue extends LinearOpMode {
         if (result == null || !result.isValid()) {
             telemetry.addData("Status", "No target");
             lastError = 0;
-        }
-
-        List<LLResultTypes.FiducialResult> tags = result.getFiducialResults();
-
-        if (tags.isEmpty()) {
-            telemetry.addData("No AprilTags", "");
-            lastError = 0;
-        }
-
-        double rawError = tags.get(0).getTargetXDegrees();
-
-        double error = (s * lastError) + ((1 - s) * rawError);
-        lastError = error;
-
-        if (Math.abs(error) < 0.3) {
-            error = 0;
-        }
-
-        // Calculate correction
-        double correction = kP * error;
-        correction = Math.max(-0.15, Math.min(0.15, correction));
+        } else {
 
 
-        laxonPos = CENTER_POS + correction;
-        raxonPos = CENTER_POS + correction;
-        laxonPos = Math.max(MIN_POS, Math.min(MAX_POS, laxonPos));
-        raxonPos = Math.max(MIN_POS, Math.min(MAX_POS, raxonPos));
+            List<LLResultTypes.FiducialResult> tags = result.getFiducialResults();
 
-        if(raxonPos > 1)
-        {
-            raxonPos = 1;
-        }
-        if(raxonPos < .1894)
-        {
-            raxonPos = .1894;
-        }
-        if(laxonPos < .1894)
-        {
-            laxonPos = .1894;
-        }
-        if(laxonPos > 1)
-        {
-            laxonPos = 1;
-        }
+            if (tags.isEmpty()) {
+                telemetry.addData("No AprilTags", "");
+                lastError = 0;
+            }
 
-        laxon.setPosition(laxonPos);
-        raxon.setPosition(raxonPos);
+            double rawError = tags.get(0).getTargetXDegrees();
+
+            double error = (s * lastError) + ((1 - s) * rawError);
+            lastError = error;
+
+            if (Math.abs(error) < 0.3) {
+                error = 0;
+            }
+
+            // Calculate correction
+            double correction = kP * error;
+            correction = Math.max(-0.15, Math.min(0.15, correction));
 
 
-        telemetry.addData("Target ID", tags.get(0).getFiducialId());
-        telemetry.addData("Raw Error", "%.2f deg", rawError);
-        telemetry.addData("error corrected", "%.2f deg", error);
-        telemetry.addData("Correction", "%.4f", correction);
+            laxonPos = CENTER_POS + correction;
+            raxonPos = CENTER_POS + correction;
+            laxonPos = Math.max(MIN_POS, Math.min(MAX_POS, laxonPos));
+            raxonPos = Math.max(MIN_POS, Math.min(MAX_POS, raxonPos));
 
-        if (Math.abs(error) < 0.3) {
-            telemetry.addLine("LOCKED ON");
+            if (raxonPos > 1) {
+                raxonPos = 1;
+            }
+            if (raxonPos < .1894) {
+                raxonPos = .1894;
+            }
+            if (laxonPos < .1894) {
+                laxonPos = .1894;
+            }
+            if (laxonPos > 1) {
+                laxonPos = 1;
+            }
+
+            laxon.setPosition(laxonPos);
+            raxon.setPosition(raxonPos);
+
+
+            telemetry.addData("Target ID", tags.get(0).getFiducialId());
+            telemetry.addData("Raw Error", "%.2f deg", rawError);
+            telemetry.addData("error corrected", "%.2f deg", error);
+            telemetry.addData("Correction", "%.4f", correction);
+            telemetry.addData("DesiredPos", .5 + correction);
+
+            if (Math.abs(error) < 0.3) {
+                telemetry.addLine("LOCKED ON");
+            }
         }
     }
 }
