@@ -49,8 +49,8 @@ public class AprilTagRed extends LinearOpMode {
     private Limelight3A limelight;
     private Servo raxon;
     private Servo laxon;
-    private double raxonPos = .5;
-    private double laxonPos = .5;
+    private double raxonPos = .48;
+    private double laxonPos = .49;
     private double CENTER_POS = .5;
     private double MIN_POS = 0.1894;
     private double MAX_POS = 1;
