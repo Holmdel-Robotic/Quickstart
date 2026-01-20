@@ -48,9 +48,9 @@ public class AutonBlue2 extends OpMode {
     private final Pose pickup2Pose = new Pose(20, 60, Math.toRadians(0)); // Second Row of Artifacts from the Spike Mark.
     private final Pose pickup2CPose = new Pose(23,89, Math.toRadians(0));
 
-    private final Pose leverPose = new Pose(14,72,Math.toRadians(0));
+    private final Pose leverPose = new Pose(14,70,Math.toRadians(0));
 
-    private final Pose leverCPose = new Pose(24,72,Math.toRadians(0));
+    private final Pose leverCPose = new Pose(28,71,Math.toRadians(0));
 
     private final Pose leverC2Pose = new Pose(52,90,Math.toRadians(0));
     //private final Pose pickup2C2Pose = new Pose(50,97, Math.toRadians(0));

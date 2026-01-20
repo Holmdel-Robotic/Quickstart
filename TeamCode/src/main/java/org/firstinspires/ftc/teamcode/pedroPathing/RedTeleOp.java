@@ -183,16 +183,16 @@ public class RedTeleOp extends OpMode {
         follower.startTeleopDrive();
         follower.setMaxPower(.8);
         blocker.setPosition(.3);
-        raxon.setPosition(.5);
-        laxon.setPosition(.5);
+        raxonPos = .5;
+        laxonPos = .5;
         hood.setPosition(.5694);
         imu.resetYaw();
-        //Parallel: .4889
-        //Min Values: .1894
+        //Parallel: .5
+        //Min Values: .1
         //Max Values: 1
-        //R45 = .3389
-        //B45 = .6094
-        //AxonRot CCW = .2705/90
+        //R45 = .36
+        //B45 = .64
+        //AxonRot CCW = .28/90
 
     }
     @Override
@@ -206,8 +206,8 @@ public class RedTeleOp extends OpMode {
             x = follower.getPose().getX();
             y = follower.getPose().getY();
             angleToRot = (imu.getRobotYawPitchRollAngles().getYaw()) - Math.toDegrees(Math.atan((138-y)/(138-x)));
-            laxonPos = .4889 + (.2705/90)*angleToRot;
-            raxonPos = .4889 + (.2705/90)*angleToRot;
+            laxonPos = .5 + (.28/90)*angleToRot;
+            raxonPos = .5 + (.28/90)*angleToRot;
         }
 
 
@@ -234,13 +234,13 @@ public class RedTeleOp extends OpMode {
         {
             raxonPos = 1;
         }
-        if(raxonPos < 0)
+        if(raxonPos < .1)
        {
-            raxonPos = 0;
+            raxonPos = .1;
         }
-        if(laxonPos < 0)
+        if(laxonPos < .1)
         {
-            laxonPos = 0;
+            laxonPos = .1;
         }
         if(laxonPos > 1)
         {
@@ -351,15 +351,15 @@ public class RedTeleOp extends OpMode {
         }
 
         if (gamepad1.left_trigger > .01 && debounceLEFT_TRIGGER){
-            raxonPos = raxon.getPosition() +.02;
-            laxonPos = laxon.getPosition() - .02;
+            raxonPos = raxon.getPosition() -.02;
+            laxonPos = laxon.getPosition() -  .02;
             laxon.setPosition(laxonPos);
             raxon.setPosition(raxonPos);
 
             debounceLEFT_TRIGGER = false;
         }
         if (gamepad1.right_trigger > .01 && debounceRIGHT_TRIGGER){
-            raxonPos = raxon.getPosition() - .02;
+            raxonPos = raxon.getPosition() + .02;
             laxonPos = laxon.getPosition() + .02;
             raxon.setPosition(raxonPos);
             laxon.setPosition(laxonPos);
