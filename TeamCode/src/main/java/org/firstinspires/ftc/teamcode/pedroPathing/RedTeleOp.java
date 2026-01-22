@@ -365,14 +365,18 @@ public class RedTeleOp extends OpMode {
         if (gamepad1.x && !flywheelOn && !debounceX){
             debounceX = true;
             flywheelOn = true;
-            flywheelLeft.setVelocity(flywheelVelocity);
-            flywheelRight.setVelocity(flywheelVelocity);
         }
         if (gamepad1.x && flywheelOn && !debounceX){
             debounceX = true;
             flywheelOn = false;
-            flywheelLeft.setPower(0);
-            flywheelRight.setPower(0);
+        }
+        if(flywheelOn){
+            flywheelLeft.setVelocity(flywheelVelocity);
+            flywheelRight.setVelocity(flywheelVelocity);
+        }
+        if(!flywheelOn){
+            flywheelLeft.setVelocity(-.01);
+            flywheelRight.setVelocity(-.01);
         }
 
         if (gamepad1.left_trigger > .01 && debounceLEFT_TRIGGER){
