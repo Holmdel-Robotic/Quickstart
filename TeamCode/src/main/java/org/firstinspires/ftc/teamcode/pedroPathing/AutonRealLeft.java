@@ -50,17 +50,17 @@ public class AutonRealLeft extends OpMode {
     private Timer pathTimer, actionTimer, opmodeTimer;
 
     private int count;
-    private final Pose startPose = new Pose(23.687, 119.835, Math.toRadians(0)); // Start Pose of our robot.
-    private final Pose scorePose = new Pose(58, 85, Math.toRadians(0)); // Scoring Pose of our robot. It is facing the wall.
-    private final Pose pickup1Pose = new Pose(20, 83, Math.toRadians(0)); // Highest (First Set) of Artifacts.
+    private final Pose startPose = new Pose(23.687, 119.835, Math.toRadians(180)); // Start Pose of our robot.
+    private final Pose scorePose = new Pose(58, 85, Math.toRadians(180)); // Scoring Pose of our robot. It is facing the wall.
+    private final Pose pickup1Pose = new Pose(20, 83, Math.toRadians(180)); // Highest (First Set) of Artifacts.
 //    private final Pose pickup3Pose = new Pose(42, 60, Math.toRadians(180)); // Middle (Second Set) of Artifacts from the Spike Mark.
 
-    private final Pose pickup2Pose = new Pose(20, 60, Math.toRadians(0)); // Second Row of Artifacts from the Spike Mark.
+    private final Pose pickup2Pose = new Pose(20, 60, Math.toRadians(180)); // Second Row of Artifacts from the Spike Mark.
 
-    private final Pose pickup3CPose = new Pose(60, 36, Math.toRadians(0));
+    private final Pose pickup3CPose = new Pose(60, 36, Math.toRadians(180));
 
-    private final Pose pickup3Pose = new Pose(20, 36, Math.toRadians(0));
-    private final Pose pickup2CPose = new Pose(60,60,Math.toRadians(0)); // Adithiya's Bezier curve control point yay
+    private final Pose pickup3Pose = new Pose(20, 36, Math.toRadians(180));
+    private final Pose pickup2CPose = new Pose(60,60,Math.toRadians(180)); // Adithiya's Bezier curve control point yay
     private Path scorePreload;
 
     private PathChain grabPickup1, scorePickup1, grabPickup2, scorePickup2, grabPickup3, grabPickup4, grabPickup5, scorePickup3 ;
