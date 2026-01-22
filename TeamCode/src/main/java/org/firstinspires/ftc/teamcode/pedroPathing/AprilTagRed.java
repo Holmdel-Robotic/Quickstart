@@ -34,8 +34,8 @@ package org.firstinspires.ftc.teamcode.pedroPathing;
 
 import com.bylazar.configurables.annotations.Configurable;
 import com.qualcomm.hardware.limelightvision.LLResult;
-import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.hardware.limelightvision.LLResultTypes;
+import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -51,8 +51,9 @@ public class AprilTagRed extends LinearOpMode {
     private Servo laxon;
     private double raxonPos = .5;
     private double laxonPos = .5;
+
     private static final double CENTER_POS = .5;
-    private static final double MIN_POS = 0.1;
+    private static final double MIN_POS = 0.1894;
     private static final double MAX_POS = 1;
     private double kP = 0.003;
 
@@ -75,7 +76,7 @@ public class AprilTagRed extends LinearOpMode {
         while (opModeIsActive()) {
             track();
             telemetry.update();
-            sleep(30);
+            sleep(20);
         }
 
         limelight.close();
@@ -113,31 +114,20 @@ public class AprilTagRed extends LinearOpMode {
 
             laxonPos = CENTER_POS + correction;
             raxonPos = CENTER_POS + correction;
-            laxonPos = Math.max(MIN_POS, Math.min(MAX_POS, laxonPos));
-            raxonPos = Math.max(MIN_POS, Math.min(MAX_POS, raxonPos));
-
-            if (raxonPos > 1) {
-                raxonPos = 1;
-            }
-            if (raxonPos < .1) {
-                raxonPos = .1;
-            }
-            if (laxonPos < .1) {
-                laxonPos = .1;
-            }
-            if (laxonPos > 1) {
-                laxonPos = 1;
-            }
-
+            //laxonPos = Math.max(MIN_POS, Math.min(MAX_POS, laxonPos));
+            // raxonPos = Math.max(MIN_POS, Math.min(MAX_POS, raxonPos));
             laxon.setPosition(laxonPos);
             raxon.setPosition(raxonPos);
 
-
+            telemetry.addData("Laxon:  ","%.2f deg", raxonPos);
+            telemetry.addData("Smoothening:  ","%.2f deg", s);
             telemetry.addData("Target ID", tags.get(0).getFiducialId());
-            telemetry.addData("Raw Error", "%.2f deg", rawError);
-            telemetry.addData("error corrected", "%.2f deg", error);
-            telemetry.addData("Correction", "%.4f", correction);
-            telemetry.addData("desiredPos", correction + CENTER_POS);
+            telemetry.addData("Raxon:  ","%.2f deg", raxonPos);
+            telemetry.addData("Laxon:  ","%.2f deg", raxonPos);
+            telemetry.addData("Raw Error:  ", "%.2f deg", rawError);
+            telemetry.addData("error corrected:  ", "%.2f deg", error);
+            telemetry.addData("Correction:  ", "%.4f", correction);
+            telemetry.addData("DesiredPos:  ", .5 + correction);
 
             if (Math.abs(error) < 0.3) {
                 telemetry.addLine("LOCKED ON");
@@ -145,4 +135,3 @@ public class AprilTagRed extends LinearOpMode {
         }
     }
 }
-
