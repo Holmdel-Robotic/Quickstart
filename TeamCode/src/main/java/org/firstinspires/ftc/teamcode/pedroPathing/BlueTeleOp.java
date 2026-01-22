@@ -20,7 +20,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 import java.util.function.Supplier;
 
 @Configurable
-@TeleOp(name = "NOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO", group = "Examples")
+@TeleOp(name = "BlueTeleop", group = "Examples")
 
 public class BlueTeleOp extends OpMode {
     private Follower follower;
