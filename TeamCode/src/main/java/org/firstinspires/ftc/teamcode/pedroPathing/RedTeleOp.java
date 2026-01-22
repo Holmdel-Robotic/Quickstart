@@ -34,6 +34,10 @@ import java.util.function.Supplier;
 @Configurable
 @TeleOp
 public class RedTeleOp extends OpMode {
+
+    private double RED;
+
+    private double GREEN;
     private Follower follower;
 
     private boolean debounceA;
@@ -98,6 +102,10 @@ public class RedTeleOp extends OpMode {
     private DistanceSensor distanceSensor;
     private CRServo feederL;
 
+    private Servo indicatorLight1;
+
+    private Servo indicatorLight2;
+
     private CRServo feederR;
     private double raxonPos;
     private double laxonPos;
@@ -124,6 +132,8 @@ public class RedTeleOp extends OpMode {
         imu = hardwareMap.get(IMU.class, "imu");
         gate = hardwareMap.get(Servo.class, "gate");
         distanceSensor = hardwareMap.get(DistanceSensor.class, "distanceSensor");
+        indicatorLight1 = hardwareMap.get(Servo.class, "lightOne");
+        indicatorLight2 = hardwareMap.get(Servo.class, "lightTwo");
         imu.initialize(
                 new IMU.Parameters(
                         new RevHubOrientationOnRobot(
@@ -144,7 +154,8 @@ public class RedTeleOp extends OpMode {
 
         hood = hardwareMap.get(Servo.class, "hood");
         blocker = hardwareMap.get(Servo.class, "blocker");
-
+        GREEN = .7;
+        RED = .5;
         flywheelVelocity = 1800;
         intakeOn = false;
         flywheelOn = false;
@@ -184,8 +195,10 @@ public class RedTeleOp extends OpMode {
         follower.startTeleopDrive();
         follower.setMaxPower(.8);
         blocker.setPosition(.3);
-
-
+        indicatorLight1.setPosition(RED);
+        indicatorLight2.setPosition(RED);
+        raxon.setPosition(.5);
+        laxon.setPosition(.5);
         hood.setPosition(.5694);
         imu.resetYaw();
         //Parallel: .4889
@@ -265,7 +278,7 @@ public class RedTeleOp extends OpMode {
         if (actiontimer.getElapsedTimeSeconds() > 4){
             kickerpos = false;
             blocker.setPosition(.3);
-
+            indicatorLight1.setPosition(RED);
 
 
         }
@@ -282,6 +295,7 @@ public class RedTeleOp extends OpMode {
             blocker.setPosition(.50 );
             kickerpos = true;
             debounceBACK = false;
+            indicatorLight1.setPosition(GREEN);
             actiontimer.resetTimer();
         }
 
