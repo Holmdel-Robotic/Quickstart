@@ -25,6 +25,7 @@ import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.Servo;
 //import com.qualcomm.robotcore.hardware.Servo;
 
+
 import org.firstinspires.ftc.robotcontroller.external.samples.SensorMROpticalDistance;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
@@ -40,6 +41,7 @@ public class RedTeleOp extends OpMode {
     private double GREEN;
     private Follower follower;
 
+    private boolean driveState;
     private Servo gate;
     private boolean macroActive;
     private boolean debounceA;
@@ -333,14 +335,21 @@ public class RedTeleOp extends OpMode {
             debounceRB = true;
         }
 
-        if (gamepad1.guide && debounceGUIDE){
+        if (gamepad1.guide && driveState && debounceGUIDE){
 
 
             //
 
             follower.turnTo(Math.toRadians(45));
             debounceGUIDE = false;
+            driveState = false;
+        }
+        if (gamepad1.guide && !driveState && debounceGUIDE){
 
+
+            follower.startTeleopDrive();
+            debounceGUIDE = false;
+            driveState = true;
         }
 
 
