@@ -76,7 +76,7 @@ public class AprilTagRed extends LinearOpMode {
         while (opModeIsActive()) {
             track();
             telemetry.update();
-            sleep(20);
+            sleep(700);
         }
 
         limelight.close();
@@ -88,7 +88,9 @@ public class AprilTagRed extends LinearOpMode {
         if (result == null || !result.isValid()) {
             telemetry.addData("Status", "No target");
             lastError = 0;
-        } else {
+        }
+
+        else {
 
 
             List<LLResultTypes.FiducialResult> tags = result.getFiducialResults();
