@@ -116,8 +116,8 @@ public class AutonRealRight extends OpMode {
         hood = hardwareMap.get(Servo.class, "hood");
 
 
-        raxon.setPosition(.3389);
-        laxon.setPosition(.3389);
+        raxon.setPosition(.36);
+        laxon.setPosition(.36);
         kicker.setPosition(.4);
     /* Here is an example for Constant Interpolation
     scorePreload.setConstantInterpolation(startPose.getHeading()); *
