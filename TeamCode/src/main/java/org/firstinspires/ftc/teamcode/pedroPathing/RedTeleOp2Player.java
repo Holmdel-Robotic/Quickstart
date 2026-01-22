@@ -194,12 +194,12 @@ public class RedTeleOp2Player extends OpMode {
         laxon.setPosition(.5);
         hood.setPosition(.5694);
         imu.resetYaw();
-        //Parallel: .4889
-        //Min Values: .1894
+        //Parallel: .5
+        //Min Values: .1
         //Max Values: 1
-        //R45 = .3389
-        //B45 = .6094
-        //AxonRot CCW = .2705/90
+        //R45 = .36
+        //B45 = .64
+        //AxonRot CCW = .28/90
 
     }
     @Override
@@ -217,14 +217,16 @@ public class RedTeleOp2Player extends OpMode {
             x = follower.getPose().getX();
             y = follower.getPose().getY();
             angleToRot = (imu.getRobotYawPitchRollAngles().getYaw()) - Math.toDegrees(Math.atan((138-y)/(138-x)));
-            laxonPos = .4889 + (.2705/90)*angleToRot;
-            raxonPos = .4889 + (.2705/90)*angleToRot;
+            laxonPos = .5 + (.28/90)*angleToRot;
+            raxonPos = .5 + (.28/90)*angleToRot;
             raxon.setPosition(raxonPos);
             laxon.setPosition(laxonPos);
             aTimer.resetTimer();
         }
 
-
+        /* hypothetical hood stuff
+        hoodPos = Math.atan(38.75/distance) * .01684
+         */
 
 
         //
@@ -232,6 +234,7 @@ public class RedTeleOp2Player extends OpMode {
         //laxonPos = (.5-(.57/180)*(Math.toDegrees(Math.atan((144-y)/(144-x)))) - (.57/180)*(imu.getRobotYawPitchRollAngles().getYaw()));
 
         distance = Math.sqrt(Math.pow(144-y,2) + Math.pow(144-x,2));
+        //change 144 to 138
 
 
 

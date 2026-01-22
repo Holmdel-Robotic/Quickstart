@@ -40,6 +40,7 @@ public class RedTeleOp extends OpMode {
     private double GREEN;
     private Follower follower;
 
+    private boolean macroActive;
     private boolean debounceA;
     private Timer pathTimer;
 
@@ -220,8 +221,8 @@ public class RedTeleOp extends OpMode {
             x = follower.getPose().getX();
             y = follower.getPose().getY();
             distance = Math.sqrt(Math.pow(144-y,2) + Math.pow(144-x,2));
-            flywheelVelocity = 8.87 * (distance) + 1052;
-            hood.setPosition((-.00554324 * distance + .9108));
+            flywheelVelocity = 8.87 * (distance) + 1000;
+            hood.setPosition((-.00554324 * distance + .89));
 
             /*
             angleToRot = (imu.getRobotYawPitchRollAngles().getYaw()) - Math.toDegrees(Math.atan((138-y)/(138-x)));
@@ -281,7 +282,7 @@ public class RedTeleOp extends OpMode {
 
 
 
-        if (gamepad1.back && debounceBACK && kickerpos){
+        if (gamepad1.back && debounced && kickerpos){
             kickerpos = false;
             blocker.setPosition(.3);
             debounceBACK = false;
@@ -294,7 +295,7 @@ public class RedTeleOp extends OpMode {
             kickerpos = true;
             debounceBACK = false;
             indicatorLight1.setPosition(GREEN);
-            indicatorLight1.setPosition(GREEN);
+            indicatorLight2.setPosition(GREEN);
             actiontimer.resetTimer();
         }
 
@@ -476,52 +477,26 @@ public class RedTeleOp extends OpMode {
         }
 
         if(gamepad1.start && debounceStart){
-          //code here!
-            blocker.setPosition(.3);
-            debounceStart = false;
-            ballsPassed = 0;
-            flywheelOn = true;
-            boolean debounceSensor = true;
-            flywheelLeft.setVelocity(flywheelVelocity);
-            flywheelRight.setVelocity(flywheelVelocity);
+            macroActive = true;
             actiontimer.resetTimer();
-            double OgHoodPos = hood.getPosition();
-            while (ballsPassed < 3 && actiontimer.getElapsedTimeSeconds() < 6){
-                blocker.setPosition(5);
-                if (actiontimer.getElapsedTimeSeconds() >= 4){
-                    //loop through balls here
-                    intakeOuter.setPower(-.8);
-                    intakeInner.setPower(.4);
 
-                    if (distanceSensor.getDistance(DistanceUnit.CM) < 10 && debounceSensor){
-                        timerA.resetTimer();
-                        while (timerA.getElapsedTimeSeconds() < .2){
+        }
 
-                        }
-                        hood.setPosition(hood.getPosition() + .05);
-                        ballsPassed++;
-                        debounceSensor = false;
+        if (actiontimer.getElapsedTime() < 3000 && macroActive) {
 
 
-
-                    }
-                    else if (distanceSensor.getDistance(DistanceUnit.CM) > 10 ){
-                        debounceSensor = true;
-                    }
-
-
-                }
-
-            }
+            indicatorLight1.setPosition(GREEN);
+            blocker.setPosition(.50);
+            intakeOuter.setPower(-.8);
+            intakeInner.setPower(.4);
+        } else if (actiontimer.getElapsedTime() > 3000 && macroActive) {
+            indicatorLight1.setPosition(RED);
             blocker.setPosition(.3);
             intakeOuter.setPower(0);
             intakeInner.setPower(0);
-            flywheelLeft.setVelocity(-1);
-            flywheelRight.setVelocity(-1);
-            hood.setPosition(OgHoodPos);
-
-
+            macroActive = false;
         }
+
         if(!gamepad1.start){
             debounceStart = true;
         }
