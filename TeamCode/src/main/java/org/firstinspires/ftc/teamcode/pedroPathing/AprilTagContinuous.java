@@ -29,138 +29,50 @@
 
 package org.firstinspires.ftc.teamcode.pedroPathing;
 
-import com.bylazar.configurables.annotations.Configurable;
 import com.qualcomm.hardware.limelightvision.LLResult;
-import com.qualcomm.hardware.limelightvision.LLResultTypes;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.AnalogInput;
-import com.qualcomm.robotcore.hardware.CRServo;
+import com.qualcomm.robotcore.hardware.Servo;
 
-import java.util.List;
-
-@Configurable
 @TeleOp(name = "AprilTagContinuous")
 public class AprilTagContinuous extends LinearOpMode {
 
-     Limelight3A limelight;
-     CRServo raxon;
-     CRServo laxon;
-    AnalogInput axonEncoder;
-
-    double ENCODER_VOLTAGE_MIN = 0.0;
-    double ENCODER_VOLTAGE_MAX = 3.3;
-    double ENCODER_DEGREES_PER_VOLT = 360.0 / 3.3; //need to adj
-    double kP = 0.015;
-    double kD = 0.003;
-    double lastError = 0;
-    double SMOOTHING = 0.3;
-    double DEADZONE = 1.0;
-    double MAX_POWER = 0.6;
-    double MIN_POWER = 0.1;
-
     @Override
     public void runOpMode() {
-        raxon = hardwareMap.get(CRServo.class, "raxon");
-        laxon = hardwareMap.get(CRServo.class, "laxon");
-        axonEncoder = hardwareMap.get(AnalogInput.class, "axonEncoder");
-        limelight = hardwareMap.get(Limelight3A.class, "limelight");
+        Servo raxon = hardwareMap.get(Servo.class, "raxon");
+        Servo laxon = hardwareMap.get(Servo.class, "laxon");
+        AnalogInput encoder = hardwareMap.get(AnalogInput.class, "axonEncoder");
+        Limelight3A limelight = hardwareMap.get(Limelight3A.class, "limelight");
 
         limelight.pipelineSwitch(1);
         limelight.start();
 
-        raxon.setPower(0);
-        laxon.setPower(0);
-
-        telemetry.addLine("Continuous Servo AprilTag Tracker Ready");
-        telemetry.addData("Current Position", "%.1f°", getEncoderDegrees());
-        telemetry.update();
+        double pos = 0.34;
+        raxon.setPosition(pos);
+        laxon.setPosition(pos);
 
         waitForStart();
 
         while (opModeIsActive()) {
-            track();
-            telemetry.update();
-            sleep(50);
-        }
+            LLResult result = limelight.getLatestResult();
 
-        raxon.setPower(0);
-        laxon.setPower(0);
-        limelight.close();
-    }
+            if (result != null && result.isValid() && !result.getFiducialResults().isEmpty()) {
+                double error = result.getFiducialResults().get(0).getTargetXDegrees();
 
-    private void track() {
-        LLResult result = limelight.getLatestResult();
+                if (Math.abs(error) > 1.0) {
+                    pos += Math.max(-0.02, Math.min(0.02, error * 0.003));
+                    pos = Math.max(0.19, Math.min(1.0, pos));
+                    laxon.setPosition(pos);
+                    raxon.setPosition(pos);
 
-        if (result == null || !result.isValid()) {
-            telemetry.addData("Status", "No valid camera result");
-            stopServos();
-            lastError = 0;
-            return;
-        }
-
-        List<LLResultTypes.FiducialResult> tags = result.getFiducialResults();
-
-        if (tags.isEmpty()) {
-            telemetry.addData("Status", "No AprilTags detected");
-            stopServos();
-            lastError = 0;
-            return;
-        }
-        //horizontal
-        double rawError = tags.get(0).getTargetXDegrees();
-
-        //smoothing
-        double error = (SMOOTHING * lastError) + ((1 - SMOOTHING) * rawError);
-
-        // Calc derivative
-        double derivative = error - lastError;
-        lastError = error;
-
-        // Check if we're locked in
-        if (Math.abs(error) < DEADZONE) {
-            stopServos();
-            telemetry.addLine("✓ LOCKED ON TARGET");
-            telemetry.addData("Target ID", tags.get(0).getFiducialId());
-            telemetry.addData("Error", "%.2f°", error);
-            telemetry.addData("Encoder Position", "%.1f°", getEncoderDegrees());
-            return;
-        }
-
-        //PD output
-        double power = (kP * error) + (kD * derivative);
-
-        // minimum power for friction
-        if (Math.abs(power) > 0.01) {
-            if (power > 0) {
-                power = Math.max(power, MIN_POWER);
-            } else {
-                power = Math.min(power, -MIN_POWER);
+                    telemetry.addData("Angle", "%.0f°", (encoder.getVoltage() / 3.3) * 360);
+                    telemetry.update();
+                }
             }
+
+            sleep(25);
         }
-
-        power = Math.max(-MAX_POWER, Math.min(MAX_POWER, power));
-        laxon.setPower(power);
-        raxon.setPower(power);
-
-        telemetry.addData("Target ID", tags.get(0).getFiducialId());
-        telemetry.addData("Error", "%.2f°", error);
-        telemetry.addData("Derivative", "%.3f", derivative);
-        telemetry.addData("Servo Power", "%.3f", power);
-        telemetry.addData("Encoder Position", "%.1f°", getEncoderDegrees());
-        telemetry.addData("Tracking...", "Adjusting turret");
-    }
-
-    private void stopServos() {
-        laxon.setPower(0);
-        raxon.setPower(0);
-    }
-
-    private double getEncoderDegrees() {
-        double voltage = axonEncoder.getVoltage();
-        // Convert voltage to degrees
-        double degrees = (voltage / ENCODER_VOLTAGE_MAX) * 360.0;
-        return degrees;
     }
 }
