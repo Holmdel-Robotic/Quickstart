@@ -241,6 +241,8 @@ public class RedTeleOp extends OpMode {
 
 
 
+
+
         //
         //raxonPos = (.5+(.43/180)*(Math.toDegrees(Math.atan((144-y)/(144-x)))) + (.43/180)*(imu.getRobotYawPitchRollAngles().getYaw()));
         //laxonPos = (.5-(.57/180)*(Math.toDegrees(Math.atan((144-y)/(144-x)))) - (.57/180)*(imu.getRobotYawPitchRollAngles().getYaw()));
@@ -344,6 +346,7 @@ public class RedTeleOp extends OpMode {
         if (gamepad1.guide && debounceGUIDE){
             slowMode = !slowMode;
             debounceGUIDE = false;
+            follower.setHeading(Math.toRadians(45));
         }
         if (!gamepad1.guide){
             debounceGUIDE = true;
