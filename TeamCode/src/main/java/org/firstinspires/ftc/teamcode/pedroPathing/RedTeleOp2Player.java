@@ -55,7 +55,7 @@ public class RedTeleOp2Player extends OpMode {
     private boolean automatedDrive;
     private Supplier<PathChain> pathChain;
 
-    private boolean autoTarget = true;
+    private boolean autoTarget = false;
     private TelemetryManager telemetryM;
     private boolean slowMode = false;
 
@@ -485,7 +485,7 @@ public class RedTeleOp2Player extends OpMode {
         }
         if(gamepad2.guide && !dG)
         {
-+            autoTarget = !autoTarget;
+            autoTarget = !autoTarget;
             laxonPos = .5;
             raxonPos = .5;
             dG = true;
