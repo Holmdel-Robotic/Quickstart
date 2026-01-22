@@ -339,6 +339,7 @@ public class RedTeleOp extends OpMode {
                     .setHeadingInterpolation(HeadingInterpolator.linearFromPoint(follower::getHeading, Math.toRadians(45), 0.3))
                     .build();
             automatedDrive = true;
+            //
 
             follower.followPath(pathChain.get());
             debounceGUIDE = false;
