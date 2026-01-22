@@ -563,8 +563,7 @@ public class BlueTeleOp extends OpMode {
         telemetry.addData("atr", angleToRot);
         telemetry.addData("flywheel velocity",flywheelLeft.getVelocity());
         telemetry.addData("debounce y", debounceY);
-        telemetry.addData("Angle(y/x)", Math.toDegrees(Math.atan((144-y)/(144-x))));
-        telemetry.addData("Angle(x/y)", Math.toDegrees(Math.atan((144-x)/(144-y))));
+     
         telemetry.addData("position", follower.getPose());
         /*telemetryM.debug("position", follower.getPose()); */
         telemetryM.debug("velocity", follower.getVelocity());
