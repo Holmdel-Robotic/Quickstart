@@ -43,7 +43,7 @@ public class AprilTagContinuous extends LinearOpMode {
     public void runOpMode() {
         Servo raxon = hardwareMap.get(Servo.class, "raxon");
         Servo laxon = hardwareMap.get(Servo.class, "laxon");
-        AnalogInput encoder = hardwareMap.get(AnalogInput.class, "axonEncoder");
+        AnalogInput encoder = hardwareMap.get(AnalogInput.class, "absEncoder");
         Limelight3A limelight = hardwareMap.get(Limelight3A.class, "limelight");
 
         limelight.pipelineSwitch(1);
