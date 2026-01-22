@@ -76,7 +76,7 @@ public class AprilTagBlue extends LinearOpMode {
         while (opModeIsActive()) {
             track();
             telemetry.update();
-            sleep(20);
+            sleep(400);
         }
 
         limelight.close();
@@ -108,14 +108,13 @@ public class AprilTagBlue extends LinearOpMode {
             }
 
             // Calculate correction
-            double correction = kP * error;
+           double correction = kP * error;
             correction = Math.max(-0.15, Math.min(0.15, correction));
-
 
             laxonPos = CENTER_POS + correction;
             raxonPos = CENTER_POS + correction;
-            //laxonPos = Math.max(MIN_POS, Math.min(MAX_POS, laxonPos));
-           // raxonPos = Math.max(MIN_POS, Math.min(MAX_POS, raxonPos));
+           //laxonPos = Math.max(MIN_POS, Math.min(MAX_POS, laxonPos));
+           //raxonPos = Math.max(MIN_POS, Math.min(MAX_POS, raxonPos));
 
             laxon.setPosition(laxonPos);
             raxon.setPosition(raxonPos);
@@ -127,8 +126,8 @@ public class AprilTagBlue extends LinearOpMode {
             telemetry.addData("Laxon:  ","%.2f deg", raxonPos);
             telemetry.addData("Raw Error:  ", "%.2f deg", rawError);
             telemetry.addData("error corrected:  ", "%.2f deg", error);
-            telemetry.addData("Correction:  ", "%.4f", correction);
-            telemetry.addData("DesiredPos:  ", .5 + correction);
+            //telemetry.addData("Correction:  ", "%.4f", correction);
+            //telemetry.addData("DesiredPos:  ", .5 + correction);
 
             if (Math.abs(error) < 0.3) {
                 telemetry.addLine("LOCKED ON");

@@ -467,8 +467,8 @@ public class RedTeleOp extends OpMode {
         if(gamepad1.y && debounceY)
         {
             autoTarget = !autoTarget;
-            laxonPos = .3389;
-            raxonPos = .3389;
+            laxonPos = .5;
+            raxonPos = .5;
             debounceY = false;
         }
         if(!gamepad1.y)
