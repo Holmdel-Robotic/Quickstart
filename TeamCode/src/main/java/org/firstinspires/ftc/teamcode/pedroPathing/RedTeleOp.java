@@ -40,6 +40,7 @@ public class RedTeleOp extends OpMode {
     private double GREEN;
     private Follower follower;
 
+    private Servo gate;
     private boolean macroActive;
     private boolean debounceA;
     private Timer pathTimer;
@@ -50,7 +51,6 @@ public class RedTeleOp extends OpMode {
 
     private Servo raxon;
 
-    private  Servo gate;
     private Servo laxon;
     private Servo blocker;
     private Servo hood;
@@ -192,6 +192,7 @@ public class RedTeleOp extends OpMode {
         //The parameter controls whether the Follower should use break mode on the motors (using it is recommended).
         //In order to use float mode, add .useBrakeModeInTeleOp(true); to your Drivetrain Constants in Constant.java (for Mecanum)
         //If you don't pass anything in, it uses the default (false)
+        gate.setPosition(.5);
         follower.startTeleopDrive();
         follower.setMaxPower(.8);
         blocker.setPosition(.3);
@@ -252,12 +253,7 @@ public class RedTeleOp extends OpMode {
 
         //flywheelVelocity = .0701544 * Math.pow(distance,2) - 3.07502 * distance + 1200;
         //hood.setPosition(.259228 * Math.sin(.03483 * distance + .48236) + .752718);
-        if (gamepad1.left_stick_button){
-            gate.setPosition(0);
-        }
-        if ( gamepad1.right_stick_button){
-            gate.setPosition(.2);
-        }
+
 
         if(raxonPos > 1)
         {
@@ -422,15 +418,11 @@ public class RedTeleOp extends OpMode {
 
         if(gamepad1.dpad_left && debounceDL)
         {
-            //laxonPos = laxon.getPosition() + .005;
-            //laxon.setPosition(laxonPos);
-            debounceDL = false;
+            gate.setPosition(gate.getPosition() + .03);
         }
         if(gamepad1.dpad_right && debounceDR)
         {
-            //laxonPos = laxon.getPosition() - .005;
-            //laxon.setPosition(laxonPos);
-            debounceDR = false;
+            gate.setPosition(gate.getPosition() - .03);
         }
         if(!gamepad1.dpad_left)
         {
@@ -482,6 +474,9 @@ public class RedTeleOp extends OpMode {
 
         }
 
+
+
+
         if (actiontimer.getElapsedTime() < 3000 && macroActive) {
 
 
@@ -513,7 +508,7 @@ public class RedTeleOp extends OpMode {
             if (!slowMode) follower.setTeleOpDrive(
                     -gamepad1.left_stick_y , 
                     -gamepad1.left_stick_x ,
-                    -gamepad1.right_stick_x,
+                    -gamepad1.right_stick_x * .5,
                     true // Robot Centric
             );
 
