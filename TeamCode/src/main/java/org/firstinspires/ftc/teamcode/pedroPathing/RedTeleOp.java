@@ -66,7 +66,7 @@ public class RedTeleOp extends OpMode {
     private boolean automatedDrive;
     private Supplier<PathChain> pathChain;
 
-    private boolean autoTarget = false;
+    private boolean autoTarget = true;
     private TelemetryManager telemetryM;
     private boolean slowMode = false;
 
@@ -186,7 +186,6 @@ public class RedTeleOp extends OpMode {
                 .setHeadingInterpolation(HeadingInterpolator.linearFromPoint(follower::getHeading, Math.toRadians(180), 0.8))
                 .build();
     }
-
     @Override
     public void start() {
         //The parameter controls whether the Follower should use break mode on the motors (using it is recommended).
