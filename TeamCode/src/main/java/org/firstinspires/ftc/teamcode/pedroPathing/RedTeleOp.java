@@ -177,11 +177,6 @@ public class RedTeleOp extends OpMode {
         laxon = hardwareMap.get(Servo.class,"laxon");
 
 
-        pathChain = () -> follower.pathBuilder() //Lazy Curve Generation
-                .addPath(new Path(new BezierLine(follower::getPose, new Pose(23.687, 119.835))))
-                .setHeadingInterpolation(HeadingInterpolator.linearFromPoint(follower::getHeading, Math.toRadians(180), 0.8))
-                .build();
-
         pathChain = () -> follower.pathBuilder()
                 .addPath(new Path(new BezierLine(follower::getPose, new Pose(23.687, 119.835))))
                 .setHeadingInterpolation(HeadingInterpolator.linearFromPoint(follower::getHeading, Math.toRadians(180), 0.8))
@@ -339,9 +334,19 @@ public class RedTeleOp extends OpMode {
         }
 
         if (gamepad1.guide && debounceGUIDE){
+            pathChain = () -> follower.pathBuilder()
+                    .addPath(new Path(new BezierLine(follower::getPose, new Pose(follower.getPose().getX(), follower.getPose().getY()))))
+                    .setHeadingInterpolation(HeadingInterpolator.linearFromPoint(follower::getHeading, Math.toRadians(45), 0.3))
+                    .build();
+            automatedDrive = true;
 
+            follower.followPath(pathChain.get());
             debounceGUIDE = false;
+
         }
+
+
+
         if (!gamepad1.guide){
             debounceGUIDE = true;
         }
@@ -519,6 +524,15 @@ public class RedTeleOp extends OpMode {
                     -gamepad1.right_stick_x * slowModeMultiplier,
                     true // Robot Centric
             );
+        }else {
+
+            if (!follower.isBusy()){
+
+                automatedDrive = false;
+
+            }
+
+
         }
 
         //Automated PathFollowing
