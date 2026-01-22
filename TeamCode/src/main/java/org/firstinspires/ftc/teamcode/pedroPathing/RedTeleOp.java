@@ -339,7 +339,7 @@ public class RedTeleOp extends OpMode {
         }
 
         if (gamepad1.guide && debounceGUIDE){
-            slowMode = !slowMode;
+
             debounceGUIDE = false;
         }
         if (!gamepad1.guide){
@@ -482,13 +482,13 @@ public class RedTeleOp extends OpMode {
 
             indicatorLight1.setPosition(GREEN);
             blocker.setPosition(.50);
-            intakeOuter.setPower(-.8);
-            intakeInner.setPower(.4);
+            intakeOuter.setVelocity(-800);
+            intakeInner.setVelocity(400);
         } else if (actiontimer.getElapsedTime() > 3000 && macroActive) {
             indicatorLight1.setPosition(RED);
             blocker.setPosition(.3);
-            intakeOuter.setPower(0);
-            intakeInner.setPower(0);
+            intakeOuter.setVelocity(-.01);
+            intakeInner.setPower(-.01);
             macroActive = false;
         }
 
@@ -508,7 +508,7 @@ public class RedTeleOp extends OpMode {
             if (!slowMode) follower.setTeleOpDrive(
                     -gamepad1.left_stick_y , 
                     -gamepad1.left_stick_x ,
-                    -gamepad1.right_stick_x * .5,
+                    -gamepad1.right_stick_x * .25,
                     true // Robot Centric
             );
 
@@ -555,6 +555,7 @@ public class RedTeleOp extends OpMode {
         telemetry.addData("Distance Sensor", distanceSensor.getDistance(DistanceUnit.CM));
         telemetry.addData("gate", gate.getPosition() );
         telemetry.addData("balls shot this burst" ,ballsPassed );
+        telemetry.addData("heading according to pedro" , follower.getHeading());
 
     }
 }
