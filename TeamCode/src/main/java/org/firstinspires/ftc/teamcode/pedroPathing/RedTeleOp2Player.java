@@ -333,12 +333,12 @@ public class RedTeleOp2Player extends OpMode {
         {
             dRB1 = true;
         }
-//        if (gamepad1.x && intakeOn && !dX){
-//            dX = true;
-//            intakeOn = false;
-//            intakeOuter.setPower(0);
-//            intakeInner.setPower(0);
-//        }
+        if (gamepad1.x && intakeOn && !dX){
+            dX = true;
+            intakeOn = false;
+            intakeOuter.setPower(0);
+            intakeInner.setPower(0);
+        }
 //        if (gamepad1.b && !feederOn && !debounceB){
 //            debounceB = true;
 //            feederOn = true;
