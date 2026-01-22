@@ -197,12 +197,12 @@ public class RedTeleOp extends OpMode {
         laxon.setPosition(.5);
         hood.setPosition(.5694);
         imu.resetYaw();
-        //Parallel: .4889
-        //Min Values: .1894
+        //Parallel: .5
+        //Min Values: .1
         //Max Values: 1
-        //R45 = .3389
-        //B45 = .6094
-        //AxonRot CCW = .2705/90
+        //R45 = .36
+        //B45 = .64
+        //AxonRot CCW = .28/90
 
     }
     @Override
@@ -220,13 +220,13 @@ public class RedTeleOp extends OpMode {
             flywheelVelocity = 8.87 * (distance) + 1000;
             hood.setPosition((-.00554324 * distance + .89));
 
-            /*
+
             angleToRot = (imu.getRobotYawPitchRollAngles().getYaw()) - Math.toDegrees(Math.atan((138-y)/(138-x)));
-            laxonPos = .49 + (.2705/90)*angleToRot; //if not work subtract laxon and act raxon
-            raxonPos = .48 + (.2705/90)*angleToRot;
+            laxonPos = .5 + (.28/90)*angleToRot; //if not work subtract laxon and act raxon
+            raxonPos = .5 + (.28/90)*angleToRot;
             raxon.setPosition(raxonPos);
             laxon.setPosition(laxonPos);
-             */
+
 
 
         }
@@ -254,13 +254,13 @@ public class RedTeleOp extends OpMode {
         {
             raxonPos = 1;
         }
-        if(raxonPos < .1894)
+        if(raxonPos < .1)
        {
-            raxonPos = .1894;
+            raxonPos = .1;
         }
-        if(laxonPos < .1894)
+        if(laxonPos < .1)
         {
-            laxonPos = .1894;
+            laxonPos = .1;
         }
         if(laxonPos > 1)
         {
