@@ -343,7 +343,7 @@ public class BlueTeleOp extends OpMode {
             follower.turnTo(Math.toRadians(135));
             debounceGUIDE = false;
             driveState = false;
-            
+
         }
         if (gamepad1.guide && !driveState && debounceGUIDE){
             follower.startTeleopDrive();

@@ -516,7 +516,11 @@ public class RedTeleOp extends OpMode {
             //In case the drivers want to use a "slowMode" you can scale the vectors
 
             //This is the normal version to use in the TeleOp
-            if (!slowMode) follower.setTeleOpDrive(
+            //Use this for the slower turning!!!! 144>y>sqrt{x^{2}}+72
+            if (!slowMode)
+
+                if
+                follower.setTeleOpDrive(
                     -gamepad1.left_stick_y , 
                     -gamepad1.left_stick_x ,
                     -gamepad1.right_stick_x * .25,
