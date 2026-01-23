@@ -41,6 +41,7 @@ public class RedTeleOp extends OpMode {
     private double GREEN;
     private Follower follower;
 
+    private DcMotorEx frontRightMotor, frontLeftMotor, backRightMotor, backLeftMotor;
     private boolean driveState;
     private Servo gate;
     private boolean macroActive;
@@ -120,6 +121,12 @@ public class RedTeleOp extends OpMode {
 
     @Override
     public void init() {
+
+        frontLeftMotor = hardwareMap.get(DcMotorEx.class, "fl");
+        frontRightMotor = hardwareMap.get(DcMotorEx.class, "fr");
+        backLeftMotor = hardwareMap.get(DcMotorEx.class, "bl");
+        backRightMotor = hardwareMap.get(DcMotorEx.class, "br");
+
         follower = Constants.createFollower(hardwareMap);
         follower.setStartingPose(new Pose(84, 36, Math.toRadians(0)));
         follower.update();
@@ -220,7 +227,7 @@ public class RedTeleOp extends OpMode {
             y = follower.getPose().getY();
             distance = Math.sqrt(Math.pow(144-y,2) + Math.pow(144-x,2));
             flywheelVelocity = 8.87 * (distance) + 950;
-            hood.setPosition((-.00554324 * distance + .89));
+            hood.setPosition((-.00554324 * distance + .86));
 
 
 //            angleToRot = (imu.getRobotYawPitchRollAngles().getYaw()) - Math.toDegrees(Math.atan((138-y)/(138-x)));
@@ -345,7 +352,7 @@ public class RedTeleOp extends OpMode {
             driveState = false;
 
         }
-        if (!gamepad1.guide){
+        if (!gamepad1.guide && !driveState){
             follower.startTeleopDrive();
             driveState = true;
             debounceGUIDE = false;
@@ -517,24 +524,55 @@ public class RedTeleOp extends OpMode {
 
             //This is the normal version to use in the TeleOp
             //Use this for the slower turning!!!! 144>y>sqrt{x^{2}}+72
-            if (!slowMode)
+            if (follower.getPose().getY() > 72) {
+                double y = -gamepad1.left_stick_y; // Remember, Y stick value is reversed
+                double x = gamepad1.left_stick_x * 1.1;
+                double rx = gamepad1.right_stick_x * .5;
 
+                // This button choice was made so that it is hard to hit on accident,
+                // it can be freely changed based on preference.
+                // The equivalent button is start on Xbox-style controllers.
 
-                follower.setTeleOpDrive(
-                    -gamepad1.left_stick_y , 
-                    -gamepad1.left_stick_x ,
-                    -gamepad1.right_stick_x * .25,
-                    true // Robot Centric
-            );
+                // Denominator is the largest motor power (absolute value) or 1
+                // This ensures all the powers maintain the same ratio,
+                // but only if at least one is out of the range [-1, 1]
+                double denominator = Math.max(Math.abs(y) + Math.abs(x) + Math.abs(rx), 1);
+                double frontLeftPower = (y + x + rx) / denominator;
+                double backLeftPower = (y - x + rx) / denominator;
+                double frontRightPower = (y - x - rx) / denominator;
+                double backRightPower = (y + x - rx) / denominator;
+
+                frontLeftMotor.setPower(frontLeftPower);
+                backLeftMotor.setPower(backLeftPower);
+                frontRightMotor.setPower(frontRightPower);
+                backRightMotor.setPower(backRightPower);
+            }
+
 
                 //This is how it looks with slowMode on
-            else follower.setTeleOpDrive(
-                    -gamepad1.left_stick_y * slowModeMultiplier,
-                    -gamepad1.left_stick_x * slowModeMultiplier,
-                    -gamepad1.right_stick_x * slowModeMultiplier,
-                    true // Robot Centric
-            );
-        }else {
+            else{
+                double y = -gamepad1.left_stick_y; // Remember, Y stick value is reversed
+                double x = gamepad1.left_stick_x * 1.1;
+                double rx = gamepad1.right_stick_x * .5;
+
+                // This button choice was made so that it is hard to hit on accident,
+                // it can be freely changed based on preference.
+                // The equivalent button is start on Xbox-style controllers.
+
+                // Denominator is the largest motor power (absolute value) or 1
+                // This ensures all the powers maintain the same ratio,
+                // but only if at least one is out of the range [-1, 1]
+                double denominator = Math.max(Math.abs(y) + Math.abs(x) + Math.abs(rx), 1);
+                double frontLeftPower = (y + x + rx) / denominator;
+                double backLeftPower = (y - x + rx) / denominator;
+                double frontRightPower = (y - x - rx) / denominator;
+                double backRightPower = (y + x - rx) / denominator;
+
+                frontLeftMotor.setPower(frontLeftPower);
+                backLeftMotor.setPower(backLeftPower);
+                frontRightMotor.setPower(frontRightPower);
+                backRightMotor.setPower(backRightPower);
+            }
 
             if (!follower.isBusy()){
 
