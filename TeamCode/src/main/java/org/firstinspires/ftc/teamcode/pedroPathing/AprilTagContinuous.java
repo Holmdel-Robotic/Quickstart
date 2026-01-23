@@ -67,7 +67,7 @@ public class AprilTagContinuous extends LinearOpMode {
                     double derivative = error - lastError;
                     double correction = (error) - (derivative);
 
-                    if (correction >.5 && correction < 1) {
+                    if (Math.abs(correction) < 2 && Math.abs(correction) > 13) {
                         lastError = error;
 
                         pos += Math.max(-0.02, Math.min(0.02, correction));
