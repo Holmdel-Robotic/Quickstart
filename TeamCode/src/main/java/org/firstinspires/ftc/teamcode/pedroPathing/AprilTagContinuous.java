@@ -49,7 +49,7 @@ public class AprilTagContinuous extends LinearOpMode {
         limelight.pipelineSwitch(1);
         limelight.start();
 
-        double pos = 0.5;
+        double pos = 0.48;
         double lastError = 0;
         raxon.setPosition(pos);
         laxon.setPosition(pos);
