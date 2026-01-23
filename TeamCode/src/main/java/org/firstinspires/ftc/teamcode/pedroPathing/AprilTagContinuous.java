@@ -61,15 +61,13 @@ public class AprilTagContinuous extends LinearOpMode {
 
             if (result != null && result.isValid() && !result.getFiducialResults().isEmpty()) {
                 double error = result.getFiducialResults().get(0).getTargetXDegrees();
-
-                laxon.setPosition(error);
-                raxon.setPosition(error);
+                double p = Math.abs(error);
 
                 if (Math.abs(error) > 1.0) {
                     double derivative = error - lastError;
-                    double correction = (error * 0.004) - (derivative * 0.003);
+                    double correction = (error) - (derivative);
 
-                    if (correction < 1) {
+                    if (correction >.5 && correction < 1) {
                         lastError = error;
 
                         pos += Math.max(-0.02, Math.min(0.02, correction));
@@ -83,6 +81,8 @@ public class AprilTagContinuous extends LinearOpMode {
                     telemetry.addData("derivation", derivative);
                     telemetry.addData("correction", correction);
                     telemetry.addData("position", pos);
+                    telemetry.addData("raw error", p);
+
                     telemetry.update();
                 }
             }
