@@ -519,7 +519,7 @@ public class RedTeleOp extends OpMode {
             //Use this for the slower turning!!!! 144>y>sqrt{x^{2}}+72
             if (!slowMode)
 
-                if
+
                 follower.setTeleOpDrive(
                     -gamepad1.left_stick_y , 
                     -gamepad1.left_stick_x ,
