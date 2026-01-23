@@ -195,8 +195,8 @@ public class RedTeleOp extends OpMode {
         blocker.setPosition(.3);
         indicatorLight1.setPosition(RED);
         indicatorLight2.setPosition(RED);
-        raxon.setPosition(.5);
-        laxon.setPosition(.5);
+        raxon.setPosition(.48);
+        laxon.setPosition(.48);
         hood.setPosition(.5694);
         imu.resetYaw();
         //Parallel: .5
@@ -335,7 +335,7 @@ public class RedTeleOp extends OpMode {
             debounceRB = true;
         }
 
-        if (gamepad1.guide && driveState && debounceGUIDE){
+        if (gamepad1.guide){
 
 
             //
@@ -345,7 +345,7 @@ public class RedTeleOp extends OpMode {
             driveState = true;
 
         }
-        if (gamepad1.guide && !driveState && debounceGUIDE){
+        if (!gamepad1.guide){
             follower.startTeleopDrive();
             driveState = true;
             debounceGUIDE = false;
