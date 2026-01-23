@@ -128,8 +128,8 @@ public class AprilTagRed extends LinearOpMode {
             telemetry.addData("Laxon:  ","%.2f deg", raxonPos);
             telemetry.addData("Raw Error:  ", "%.2f deg", rawError);
             telemetry.addData("error corrected:  ", "%.2f deg", error);
-            telemetry.addData("Correction:  ", "%.4f", correction);
-            telemetry.addData("DesiredPos:  ", .5 + correction);
+            telemetry.addData("Correction:  ",correction);
+            telemetry.addData("DesiredPos:  ",correction);
 
             if (Math.abs(error) < 0.3) {
                 telemetry.addLine("LOCKED ON");
