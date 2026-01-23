@@ -55,7 +55,7 @@ public class AutonRealRight extends OpMode {
     private final Pose pickup1Pose = new Pose(144-20, 83, Math.toRadians(0)); // Highest (First Set) of Artifacts.
 //    private final Pose pickup3Pose = new Pose(42, 60, Math.toRadians(180)); // Middle (Second Set) of Artifacts from the Spike Mark.
 
-    private final Pose pickup2Pose = new Pose(144-20, 60, Math.toRadians(0)); // Second Row of Artifacts from the Spike Mark.
+    private final Pose pickup2Pose = new Pose(144-22, 60, Math.toRadians(0)); // Second Row of Artifacts from the Spike Mark.
 
     private final Pose pickup3CPose = new Pose(144-60, 36, Math.toRadians(0));
 
@@ -207,6 +207,8 @@ public class AutonRealRight extends OpMode {
                 setPathState(State.SCORING);
                 actionTimer.resetTimer();
 
+                IntakeOuter.setPower(-.8);
+                IntakeInner.setPower(-.4);
 
                 break;
             //After First 3
