@@ -199,8 +199,8 @@ public class AutonRealLeft extends OpMode {
     public void autonomousPathUpdate() {
         switch (state) {
             case START:
-                flywheelLeft.setVelocity(1700);
-                flywheelRight.setVelocity(1700);
+                //flywheelLeft.setVelocity(1700);
+                //flywheelRight.setVelocity(1700);
                 hood.setPosition(.50);
 
                 follower.setMaxPower(0.8);
@@ -221,10 +221,10 @@ public class AutonRealLeft extends OpMode {
 
                     if(actionTimer.getElapsedTimeSeconds() <= 1){
 
-                        flywheelLeft.setVelocity(-1800);
-                        flywheelRight.setVelocity(-1800);
+                        flywheelLeft.setVelocity(-1700);
+                        flywheelRight.setVelocity(-1700);
 
-                        hood.setPosition(.57);
+                        hood.setPosition(.5);
                         // && flywheelRight.getVelocity() > 1650 && flywheelLeft.getVelocity() > 1650 &&
                     } else if (actionTimer.getElapsedTimeSeconds() >= 1 && actionTimer.getElapsedTimeSeconds() <= 3) {
 

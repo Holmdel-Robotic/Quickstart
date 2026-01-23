@@ -219,7 +219,7 @@ public class RedTeleOp extends OpMode {
             x = follower.getPose().getX();
             y = follower.getPose().getY();
             distance = Math.sqrt(Math.pow(144-y,2) + Math.pow(144-x,2));
-            flywheelVelocity = 8.87 * (distance) + 1000;
+            flywheelVelocity = 8.87 * (distance) + 950;
             hood.setPosition((-.00554324 * distance + .89));
 
 
