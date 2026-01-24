@@ -477,13 +477,13 @@ public class RedTeleOp extends OpMode {
 
 
         if(gamepad1.dpad_up && flywheelOn && !debounce_dpad_up){
-            flywheelVelocity += 200;
+            flywheelVelocity += 100;
             flywheelLeft.setVelocity(flywheelVelocity);
             flywheelRight.setVelocity(flywheelVelocity);
             debounce_dpad_up = true;
         }
         if(gamepad1.dpad_down && flywheelOn && !debounce_dpad_down){
-            flywheelVelocity -= 200;
+            flywheelVelocity -= 100;
             flywheelLeft.setVelocity(flywheelVelocity);
             flywheelRight.setVelocity(flywheelVelocity);
             debounce_dpad_down = true;
