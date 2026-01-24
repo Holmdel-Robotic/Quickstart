@@ -229,8 +229,8 @@ public class RedTeleOp extends OpMode {
             x = follower.getPose().getX();
             y = follower.getPose().getY();
             distance = Math.sqrt(Math.pow(144-y,2) + Math.pow(144-x,2));
-            flywheelVelocity = 8.87 * (distance) + 950;
-            hood.setPosition((-.00554324 * distance + .86));
+            flywheelVelocity = 8.87 * (distance) + 1000;
+            hood.setPosition((-.00554324 * distance + .96));
 
 
 //            angleToRot = (imu.getRobotYawPitchRollAngles().getYaw()) - Math.toDegrees(Math.atan((138-y)/(138-x)));
