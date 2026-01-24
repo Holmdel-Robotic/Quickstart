@@ -165,7 +165,7 @@ public class RedTeleOp extends OpMode {
         hood = hardwareMap.get(Servo.class, "hood");
         blocker = hardwareMap.get(Servo.class, "blocker");
         GREEN = .5;
-        RED = 0.25;
+        RED = 0.2;
         flywheelVelocity = 1600;
         intakeOn = false;
         flywheelOn = false;
@@ -299,7 +299,7 @@ public class RedTeleOp extends OpMode {
 
         }
         if (gamepad1.back && debounceBACK && !kickerpos){
-            blocker.setPosition(.60 );
+            blocker.setPosition(.57 );
             kickerpos = true;
             debounceBACK = false;
             indicatorLight1.setPosition(GREEN);
