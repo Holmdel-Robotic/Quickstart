@@ -38,6 +38,8 @@ public class BlueTeleOp extends OpMode {
 
     private double RED;
 
+    private double defaultVelo;
+    private double defaultHood;
     private double GREEN;
     private Follower follower;
 
@@ -126,7 +128,8 @@ public class BlueTeleOp extends OpMode {
         frontRightMotor = hardwareMap.get(DcMotorEx.class, "fr");
         backLeftMotor = hardwareMap.get(DcMotorEx.class, "bl");
         backRightMotor = hardwareMap.get(DcMotorEx.class, "br");
-
+        defaultHood = .64;
+        defaultVelo = 1540;
         follower = Constants.createFollower(hardwareMap);
         follower.setStartingPose(new Pose(144 - 84, 36, Math.toRadians(180)));
         follower.update();
@@ -228,7 +231,7 @@ public class BlueTeleOp extends OpMode {
             y = follower.getPose().getY();
             distance = Math.sqrt(Math.pow(144 - y, 2) + Math.pow(x, 2));
             flywheelVelocity = 8.87 * (distance) + 1000;
-            hood.setPosition((-.00554324 * distance + .89));
+            hood.setPosition((-.00554324 * distance + .95));
 
 
 //            angleToRot = (imu.getRobotYawPitchRollAngles().getYaw()) - Math.toDegrees(Math.atan((138-y)/(138-x)));
@@ -244,8 +247,6 @@ public class BlueTeleOp extends OpMode {
         //
         //raxonPos = (.5+(.43/180)*(Math.toDegrees(Math.atan((144-y)/(144-x)))) + (.43/180)*(imu.getRobotYawPitchRollAngles().getYaw()));
         //laxonPos = (.5-(.57/180)*(Math.toDegrees(Math.atan((144-y)/(144-x)))) - (.57/180)*(imu.getRobotYawPitchRollAngles().getYaw()));
-
-        distance = Math.sqrt(Math.pow(144 - y, 2) + Math.pow(144 - x, 2));
 
 
         //flywheelVelocity = .0701544 * Math.pow(distance,2) - 3.07502 * distance + 1200;
@@ -474,6 +475,8 @@ public class BlueTeleOp extends OpMode {
             autoTarget = !autoTarget;
             laxonPos = .5;
             raxonPos = .5;
+            flywheelVelocity = defaultVelo;
+            hood.setPosition(defaultHood);
             debounceY = false;
         }
         if (!gamepad1.y) {
