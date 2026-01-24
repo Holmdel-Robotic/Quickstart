@@ -178,6 +178,7 @@ public class RedTeleOp extends OpMode {
         debounce_dpad_down = false;
         debounceY = false;
         debounceBACK = false;
+        macroActive = false;
 
 
         actiontimer = new Timer();
@@ -196,10 +197,14 @@ public class RedTeleOp extends OpMode {
         //The parameter controls whether the Follower should use break mode on the motors (using it is recommended).
         //In order to use float mode, add .useBrakeModeInTeleOp(true); to your Drivetrain Constants in Constant.java (for Mecanum)
         //If you don't pass anything in, it uses the default (false)
+        blocker.setPosition(.3);
+        indicatorLight1.setPosition(RED);
+        indicatorLight2.setPosition(RED);
         gate.setPosition(.5);
         follower.startTeleopDrive();
         follower.setMaxPower(.8);
         blocker.setPosition(.3);
+        kickerpos = false;
         indicatorLight1.setPosition(RED);
         indicatorLight2.setPosition(RED);
         raxon.setPosition(.48);
@@ -312,7 +317,7 @@ public class RedTeleOp extends OpMode {
         if (intakeOn) {
             intakeOuter.setPower(-.8);
 
-            if (distanceSensor.getDistance(DistanceUnit.CM) < 13.5){
+            if (distanceSensor.getDistance(DistanceUnit.CM) > 13.5){
                 intakeInner.setPower(.4);
             }
             else{
