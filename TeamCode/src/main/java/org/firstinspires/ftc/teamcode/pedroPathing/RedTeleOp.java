@@ -284,7 +284,10 @@ public class RedTeleOp extends OpMode {
         //raxon.setPosition(raxonPos);
         //laxon.setPosition(laxonPos);
 
-
+        if(!kickerpos){
+            indicatorLight1.setPosition(RED);
+            indicatorLight2.setPosition(RED);
+        }
 
 
         if (gamepad1.back && debounceBACK && kickerpos){
