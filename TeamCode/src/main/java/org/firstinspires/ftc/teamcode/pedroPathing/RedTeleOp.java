@@ -286,18 +286,26 @@ public class RedTeleOp extends OpMode {
         if (gamepad1.back && debounceBACK && kickerpos){
             kickerpos = false;
             blocker.setPosition(.3);
-            debounceBACK = false;G
-            indicatorLight1.setPosition(RED);
-            indicatorLight2.setPosition(RED);
+            debounceBACK = false;
+            //indicatorLight1.setPosition(RED);
+            //indicatorLight2.setPosition(RED);
 
         }
         if (gamepad1.back && debounceBACK && !kickerpos){
             blocker.setPosition(.57 );
             kickerpos = true;
             debounceBACK = false;
+            //indicatorLight1.setPosition(GREEN);
+            //indicatorLight2.setPosition(GREEN);
+            actiontimer.resetTimer();
+        }
+
+        if (kickerpos){
             indicatorLight1.setPosition(GREEN);
             indicatorLight2.setPosition(GREEN);
-            actiontimer.resetTimer();
+        }else{
+            indicatorLight1.setPosition(RED);
+            indicatorLight2.setPosition(RED);
         }
 
 
