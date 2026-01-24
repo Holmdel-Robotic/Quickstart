@@ -47,9 +47,9 @@ public class BlueTeleOp extends OpMode {
     private boolean debounceA;
     private Timer pathTimer;
 
-    private  Timer actiontimer;
+    private Timer actiontimer;
 
-    private  Timer timerA;
+    private Timer timerA;
 
     private Servo raxon;
 
@@ -91,7 +91,7 @@ public class BlueTeleOp extends OpMode {
 
     private boolean debounceDL, debounceDR, debounceLB, debounceRB;
 
-    private  boolean debounceBACK;
+    private boolean debounceBACK;
 
     private boolean debounceStart;
     private boolean debounceGUIDE;
@@ -182,8 +182,8 @@ public class BlueTeleOp extends OpMode {
 
         actiontimer = new Timer();
 
-        raxon = hardwareMap.get(Servo.class,"raxon");
-        laxon = hardwareMap.get(Servo.class,"laxon");
+        raxon = hardwareMap.get(Servo.class, "raxon");
+        laxon = hardwareMap.get(Servo.class, "laxon");
 
 
         pathChain = () -> follower.pathBuilder()
@@ -191,6 +191,7 @@ public class BlueTeleOp extends OpMode {
                 .setHeadingInterpolation(HeadingInterpolator.linearFromPoint(follower::getHeading, Math.toRadians(180), 0.8))
                 .build();
     }
+
     @Override
     public void start() {
         //The parameter controls whether the Follower should use break mode on the motors (using it is recommended).
@@ -202,8 +203,8 @@ public class BlueTeleOp extends OpMode {
         blocker.setPosition(.3);
         indicatorLight1.setPosition(RED);
         indicatorLight2.setPosition(RED);
-        raxon.setPosition(.5);
-        laxon.setPosition(.5);
+        raxon.setPosition(.48);
+        laxon.setPosition(.48);
         hood.setPosition(.5694);
         imu.resetYaw();
         //Parallel: .5
@@ -214,18 +215,16 @@ public class BlueTeleOp extends OpMode {
         //AxonRot CCW = .28/90
 
     }
+
     @Override
     public void loop() {
 
 
-
-
-        if(autoTarget)
-        {
+        if (autoTarget) {
 
             x = follower.getPose().getX();
             y = follower.getPose().getY();
-            distance = Math.sqrt(Math.pow(144-y,2) + Math.pow(x,2));
+            distance = Math.sqrt(Math.pow(144 - y, 2) + Math.pow(x, 2));
             flywheelVelocity = 8.87 * (distance) + 1000;
             hood.setPosition((-.00554324 * distance + .89));
 
@@ -237,42 +236,30 @@ public class BlueTeleOp extends OpMode {
 //            laxon.setPosition(laxonPos);
 
 
-
         }
-
-
-
-
-
-
 
 
         //
         //raxonPos = (.5+(.43/180)*(Math.toDegrees(Math.atan((144-y)/(144-x)))) + (.43/180)*(imu.getRobotYawPitchRollAngles().getYaw()));
         //laxonPos = (.5-(.57/180)*(Math.toDegrees(Math.atan((144-y)/(144-x)))) - (.57/180)*(imu.getRobotYawPitchRollAngles().getYaw()));
 
-        distance = Math.sqrt(Math.pow(144-y,2) + Math.pow(144-x,2));
-
+        distance = Math.sqrt(Math.pow(144 - y, 2) + Math.pow(144 - x, 2));
 
 
         //flywheelVelocity = .0701544 * Math.pow(distance,2) - 3.07502 * distance + 1200;
         //hood.setPosition(.259228 * Math.sin(.03483 * distance + .48236) + .752718);
 
 
-        if(raxonPos > 1)
-        {
+        if (raxonPos > 1) {
             raxonPos = 1;
         }
-        if(raxonPos < .1)
-        {
+        if (raxonPos < .1) {
             raxonPos = .1;
         }
-        if(laxonPos < .1)
-        {
+        if (laxonPos < .1) {
             laxonPos = .1;
         }
-        if(laxonPos > 1)
-        {
+        if (laxonPos > 1) {
             laxonPos = 1;
         }
 
@@ -280,31 +267,37 @@ public class BlueTeleOp extends OpMode {
         //laxon.setPosition(laxonPos);
 
 
-
-
         if (gamepad1.back && debounceBACK && kickerpos){
             kickerpos = false;
             blocker.setPosition(.3);
             debounceBACK = false;
-            indicatorLight1.setPosition(RED);
-            indicatorLight2.setPosition(RED);
+            //indicatorLight1.setPosition(RED);
+            //indicatorLight2.setPosition(RED);
 
         }
         if (gamepad1.back && debounceBACK && !kickerpos){
             blocker.setPosition(.57 );
             kickerpos = true;
             debounceBACK = false;
-            indicatorLight1.setPosition(BLUE);
-            indicatorLight2.setPosition(BLUE);
+            //indicatorLight1.setPosition(GREEN);
+            //indicatorLight2.setPosition(GREEN);
             actiontimer.resetTimer();
         }
 
-        if(!gamepad1.back){
+        if (kickerpos){
+            indicatorLight1.setPosition(GREEN);
+            indicatorLight2.setPosition(GREEN);
+        }else{
+            indicatorLight1.setPosition(RED);
+            indicatorLight2.setPosition(RED);
+        }
+
+        if (!gamepad1.back) {
 
             debounceBACK = true;
         }
 
-        if (gamepad1.a && !intakeOn && !debounceA){
+        if (gamepad1.a && !intakeOn && !debounceA) {
             debounceA = true;
             intakeOn = true;
 
@@ -312,10 +305,9 @@ public class BlueTeleOp extends OpMode {
         if (intakeOn) {
             intakeOuter.setPower(-.8);
 
-            if (distanceSensor.getDistance(DistanceUnit.CM) > 13.5 || kickerpos){
+            if (distanceSensor.getDistance(DistanceUnit.CM) > 13.5 || kickerpos) {
                 intakeInner.setPower(.4);
-            }
-            else{
+            } else {
                 intakeInner.setPower(0);
             }
 
@@ -327,12 +319,12 @@ public class BlueTeleOp extends OpMode {
             intakeOuter.setPower(0);
             intakeInner.setPower(0);
         }
-        if (gamepad1.a && intakeOn && !debounceA){
+        if (gamepad1.a && intakeOn && !debounceA) {
             debounceA = true;
             intakeOn = false;
 
         }
-        if (gamepad1.b && !feederOn && !debounceB){
+        if (gamepad1.b && !feederOn && !debounceB) {
             debounceB = true;
             feederOn = true;
             intakeOuter.setVelocity(900);
@@ -341,24 +333,22 @@ public class BlueTeleOp extends OpMode {
 //            feederR.setPower(1);
         }
 
-        if (gamepad1.left_bumper && debounceLB){
-            hood.setPosition(hood.getPosition()-.05);
+        if (gamepad1.left_bumper && debounceLB) {
+            hood.setPosition(hood.getPosition() - .05);
             debounceLB = false;
         }
-        if(!gamepad1.left_bumper)
-        {
+        if (!gamepad1.left_bumper) {
             debounceLB = true;
         }
-        if (gamepad1.right_bumper && debounceRB){
-            hood.setPosition(hood.getPosition()+.05);
+        if (gamepad1.right_bumper && debounceRB) {
+            hood.setPosition(hood.getPosition() + .05);
             debounceRB = false;
         }
-        if(!gamepad1.right_bumper)
-        {
+        if (!gamepad1.right_bumper) {
             debounceRB = true;
         }
 
-        if (gamepad1.guide){
+        if (gamepad1.guide) {
 
 
             //
@@ -368,23 +358,19 @@ public class BlueTeleOp extends OpMode {
             driveState = false;
 
         }
-        if (!gamepad1.guide && !driveState){
+        if (!gamepad1.guide && !driveState) {
             follower.startTeleopDrive();
             driveState = true;
             debounceGUIDE = false;
         }
 
 
-
-        if (!gamepad1.guide){
+        if (!gamepad1.guide) {
             debounceGUIDE = true;
         }
 
 
-
-
-
-        if (gamepad1.b && feederOn && !debounceB){
+        if (gamepad1.b && feederOn && !debounceB) {
             debounceB = true;
             feederOn = false;
             intakeOuter.setVelocity(0);
@@ -393,32 +379,32 @@ public class BlueTeleOp extends OpMode {
 //            feederR.setPower(0);
         }
 
-        if (gamepad1.x && !flywheelOn && !debounceX){
+        if (gamepad1.x && !flywheelOn && !debounceX) {
             debounceX = true;
             flywheelOn = true;
         }
-        if (gamepad1.x && flywheelOn && !debounceX){
+        if (gamepad1.x && flywheelOn && !debounceX) {
             debounceX = true;
             flywheelOn = false;
         }
-        if(flywheelOn){
+        if (flywheelOn) {
             flywheelLeft.setVelocity(flywheelVelocity);
             flywheelRight.setVelocity(flywheelVelocity);
         }
-        if(!flywheelOn){
+        if (!flywheelOn) {
             flywheelLeft.setVelocity(-.01);
             flywheelRight.setVelocity(-.01);
         }
 
-        if (gamepad1.left_trigger > .01 && debounceLEFT_TRIGGER){
-            raxonPos = raxon.getPosition() +.03;
+        if (gamepad1.left_trigger > .01 && debounceLEFT_TRIGGER) {
+            raxonPos = raxon.getPosition() + .03;
             laxonPos = laxon.getPosition() - .03;
             laxon.setPosition(laxonPos);
             raxon.setPosition(raxonPos);
 
             debounceLEFT_TRIGGER = false;
         }
-        if (gamepad1.right_trigger > .01 && debounceRIGHT_TRIGGER){
+        if (gamepad1.right_trigger > .01 && debounceRIGHT_TRIGGER) {
             raxonPos = raxon.getPosition() - .03;
             laxonPos = laxon.getPosition() + .03;
             raxon.setPosition(raxonPos);
@@ -428,42 +414,34 @@ public class BlueTeleOp extends OpMode {
         }
 
 
-
-
-        if (gamepad1.left_trigger < .01){
+        if (gamepad1.left_trigger < .01) {
             debounceLEFT_TRIGGER = true;
         }
-        if (gamepad1.right_trigger < .01){
+        if (gamepad1.right_trigger < .01) {
             debounceRIGHT_TRIGGER = true;
         }
 
 
-
-
-        if(!gamepad1.a){
+        if (!gamepad1.a) {
             debounceA = false;
         }
-        if(!gamepad1.b){
+        if (!gamepad1.b) {
             debounceB = false;
         }
-        if(!gamepad1.x){
+        if (!gamepad1.x) {
             debounceX = false;
         }
 
-        if(gamepad1.dpad_left && debounceDL)
-        {
+        if (gamepad1.dpad_left && debounceDL) {
             gate.setPosition(gate.getPosition() + .03);
         }
-        if(gamepad1.dpad_right && debounceDR)
-        {
+        if (gamepad1.dpad_right && debounceDR) {
             gate.setPosition(gate.getPosition() - .03);
         }
-        if(!gamepad1.dpad_left)
-        {
+        if (!gamepad1.dpad_left) {
             debounceDL = true;
         }
-        if(!gamepad1.dpad_right)
-        {
+        if (!gamepad1.dpad_right) {
             debounceDR = true;
         }
         //Call this once per loop
@@ -471,44 +449,40 @@ public class BlueTeleOp extends OpMode {
         telemetryM.update();
 
 
-        if(gamepad1.dpad_up && flywheelOn && !debounce_dpad_up){
+        if (gamepad1.dpad_up && flywheelOn && !debounce_dpad_up) {
             flywheelVelocity += 200;
             flywheelLeft.setVelocity(flywheelVelocity);
             flywheelRight.setVelocity(flywheelVelocity);
             debounce_dpad_up = true;
         }
-        if(gamepad1.dpad_down && flywheelOn && !debounce_dpad_down){
+        if (gamepad1.dpad_down && flywheelOn && !debounce_dpad_down) {
             flywheelVelocity -= 200;
             flywheelLeft.setVelocity(flywheelVelocity);
             flywheelRight.setVelocity(flywheelVelocity);
             debounce_dpad_down = true;
         }
 
-        if(!gamepad1.dpad_up){
+        if (!gamepad1.dpad_up) {
             debounce_dpad_up = false;
         }
-        if(!gamepad1.dpad_down){
+        if (!gamepad1.dpad_down) {
             debounce_dpad_down = false;
         }
-        if(gamepad1.y && debounceY)
-        {
+        if (gamepad1.y && debounceY) {
             autoTarget = !autoTarget;
             laxonPos = .5;
             raxonPos = .5;
             debounceY = false;
         }
-        if(!gamepad1.y)
-        {
+        if (!gamepad1.y) {
             debounceY = true;
         }
 
-        if(gamepad1.start && debounceStart){
+        if (gamepad1.start && debounceStart) {
             macroActive = true;
             actiontimer.resetTimer();
 
         }
-
-
 
 
         if (actiontimer.getElapsedTime() < 3000 && macroActive) {
@@ -526,10 +500,9 @@ public class BlueTeleOp extends OpMode {
             macroActive = false;
         }
 
-        if(!gamepad1.start){
+        if (!gamepad1.start) {
             debounceStart = true;
         }
-
 
 
         if (!automatedDrive) {
@@ -566,7 +539,7 @@ public class BlueTeleOp extends OpMode {
 
 
             //This is how it looks with slowMode on
-            else{
+            else {
                 double y = -gamepad1.left_stick_y; // Remember, Y stick value is reversed
                 double x = gamepad1.left_stick_x * 1.1;
                 double rx = gamepad1.right_stick_x * .5;
@@ -590,41 +563,43 @@ public class BlueTeleOp extends OpMode {
                 backRightMotor.setPower(backRightPower);
             }
 
-        //Automated PathFollowing
+            //Automated PathFollowing
 
-        //Stop automated following if the follower is done
-
-
-        //Slow Mode
+            //Stop automated following if the follower is done
 
 
-        //Optional way to change slow mode strength
+            //Slow Mode
 
 
-        //Optional way to change slow mode strength
+            //Optional way to change slow mode strength
 
 
-        telemetry.addData("axonL", laxon.getPosition());
-        telemetry.addData("axonR", raxon.getPosition());
-        telemetry.addData("blocker pos",blocker.getPosition());
-        telemetry.addData("Hood position", hood.getPosition());
-        //telemetry.addData("raxon",raxon.getPosition());
-        //telemetry.addData("laxon",laxon.getPosition());
-        telemetry.addData("atr", angleToRot);
-        telemetry.addData("flywheel velocity",flywheelLeft.getVelocity());
-        telemetry.addData("debounce y", debounceY);
-     
-        telemetry.addData("position", follower.getPose());
-        /*telemetryM.debug("position", follower.getPose()); */
-        telemetryM.debug("velocity", follower.getVelocity());
-        telemetryM.debug("automatedDrive", automatedDrive);
-        telemetry.addData("YAW", imu.getRobotYawPitchRollAngles().getYaw());
-        telemetry.addData("distance", distance);
-        telemetry.addData("Distance Sensor", distanceSensor.getDistance(DistanceUnit.CM));
-        telemetry.addData("gate", gate.getPosition() );
-        telemetry.addData("balls shot this burst" ,ballsPassed );
-        telemetry.addData("heading according to pedro" , follower.getHeading());
+            //Optional way to change slow mode strength
 
+
+            telemetry.addData("axonL", laxon.getPosition());
+            telemetry.addData("axonR", raxon.getPosition());
+            telemetry.addData("blocker pos", blocker.getPosition());
+            telemetry.addData("Hood position", hood.getPosition());
+            //telemetry.addData("raxon",raxon.getPosition());
+            //telemetry.addData("laxon",laxon.getPosition());
+            telemetry.addData("atr", angleToRot);
+            telemetry.addData("flywheel velocity", flywheelLeft.getVelocity());
+            telemetry.addData("debounce y", debounceY);
+
+            telemetry.addData("position", follower.getPose());
+            /*telemetryM.debug("position", follower.getPose()); */
+            telemetryM.debug("velocity", follower.getVelocity());
+            telemetryM.debug("automatedDrive", automatedDrive);
+            telemetry.addData("YAW", imu.getRobotYawPitchRollAngles().getYaw());
+            telemetry.addData("distance", distance);
+            telemetry.addData("Distance Sensor", distanceSensor.getDistance(DistanceUnit.CM));
+            telemetry.addData("gate", gate.getPosition());
+            telemetry.addData("balls shot this burst", ballsPassed);
+            telemetry.addData("heading according to pedro", follower.getHeading());
+
+        }
     }
+
 }
 
